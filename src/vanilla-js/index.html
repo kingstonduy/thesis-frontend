@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Bar with Compact Tray</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            padding: 5px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            outline: none;
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            color: #555;
+        }
+
+        .bar-search-results-tray {
+            display: none;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 25vh; /* Set height to 1/4 of the screen */
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .bar-search-results-tray.active {
+            display: block;
+        }
+
+        .tray-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tray-search-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 10px 15px;
+        }
+
+        .tray-suggestions {
+            margin-top: 20px;
+        }
+
+        .suggestion-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            text-decoration: underline;
+        }
+
+        .cancel-button {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .product {
+            margin: 150px auto 20px;
+            padding: 20px;
+            max-width: 400px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="search-container">
+            <div class="search-bar" id="searchBar">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search"
+                    id="mainSearchInput"
+                    readonly
+                />
+                <button class="search-button">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="search-icon"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15.75 15.75L21 21m-5.25-5.25A6.75 6.75 0 1114.25 3 6.75 6.75 0 0115.75 15.75z"
+                        />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bar-search-results-tray" id="resultsTray">
+        <div class="tray-header">
+            <div class="tray-search-bar">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search for products"
+                    id="traySearchInput"
+                />
+            </div>
+            <button class="cancel-button" id="cancelButton">Cancel</button>
+        </div>
+        <div class="tray-suggestions">
+            <div class="suggestion-item">Popular Item 1</div>
+            <div class="suggestion-item">Popular Item 2</div>
+            <div class="suggestion-item">Popular Item 3</div>
+        </div>
+    </div>
+
+    <main>
+        <div class="product">
+            <h2>Product Title</h2>
+            <p>Description of the product goes here. Add more content as needed.</p>
+        </div>
+    </main>
+
+    <script>
+        const searchBar = document.getElementById("searchBar");
+        const resultsTray = document.getElementById("resultsTray");
+        const cancelButton = document.getElementById("cancelButton");
+
+        // Open the search results tray
+        searchBar.addEventListener("click", () => {
+            resultsTray.classList.add("active");
+        });
+
+        // Close the search results tray
+        cancelButton.addEventListener("click", () => {
+            resultsTray.classList.remove("active");
+        });
+    </script>
+</body>
+</html>
