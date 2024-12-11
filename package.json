@@ -1,18 +1,26 @@
 {
-  "name": "thesis",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "preact": "^10.25.0"
-  },
-  "devDependencies": {
-    "@preact/preset-vite": "^2.9.1",
-    "vite": "^6.0.1"
-  }
+    "name": "thesis",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "prebuild": "npm install react-bootstrap npm install @mui/material @emotion/react @emotion/styled npm install @mui/icons-material",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "flowbite": "^2.5.2",
+        "preact": "^10.25.0",
+        "react-bootstrap": "^2.10.6",
+        "react-icons": "^5.4.0",
+        "react-router-dom": "^7.0.2"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.9.1",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.16",
+        "vite": "^6.0.3"
+    }
 }
