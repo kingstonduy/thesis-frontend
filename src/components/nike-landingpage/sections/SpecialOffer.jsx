@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { arrowRight } from "../assets/icons";
 import { offer } from "../assets/images";
 import Button from "../components/button";
@@ -29,7 +30,7 @@ const SpecialOffer = () => {
                     unique desires, surpassing the loftiest expectations. Your
                     journey with us is nothing short of exceptional.
                 </p>
-                <div className="mt-11 flex flex-wrap gap-4">
+                <Link to="/products" className="mt-11 flex flex-wrap gap-4">
                     <Button label="Shop now" iconURL={arrowRight} />
                     <Button
                         label="Learn more"
@@ -37,7 +38,7 @@ const SpecialOffer = () => {
                         borderColor="border-slate-gray"
                         textColor="text-slate-gray"
                     />
-                </div>
+                </Link>
             </div>
         </section>
     );

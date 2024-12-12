@@ -5,6 +5,7 @@ import { arrowRight } from "../assets/icons";
 import { bigShoe1 } from "../assets/images";
 import Button from "../components/button";
 import { shoes, statistics } from "../constants";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
     const [bigShoeImg, setBigShoeImg] = useState(bigShoe1);
@@ -27,11 +28,13 @@ const Hero = () => {
                     innovation for your lifestyle.
                 </p>
 
-                <Button
-                    label="Shop now"
-                    className="bg-black"
-                    iconURL={arrowRight}
-                />
+                <Link to="/products">
+                    <Button
+                        label="Shop now"
+                        className="bg-black"
+                        iconURL={arrowRight}
+                    />
+                </Link>
 
                 <div className="flex justify-start items-start flex-wrap w-full mt-20 gap-16">
                     {statistics.map((stat, index) => (

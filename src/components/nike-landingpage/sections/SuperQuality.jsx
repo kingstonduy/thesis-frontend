@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { shoe8 } from "../assets/images";
 import Button from "../components/button";
 
@@ -23,9 +24,9 @@ const SuperQuality = () => {
                     Our dedication to detail and excellence ensures your
                     satisfaction
                 </p>
-                <div className="mt-11">
+                <Link to="/products" className="mt-11">
                     <Button label="View details" />
-                </div>
+                </Link>
             </div>
 
             <div className="flex-1 flex justify-center items-center">
