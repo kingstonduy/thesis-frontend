@@ -1,360 +1,343 @@
 import React, { useState, useEffect } from "react";
+import {
+    Divider,
+    Button,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+} from "@mui/material";
 
-// Simulated API response for comments
-const fetchComments = () => {
-    return [
-        {
-            id: 1,
-            user: {
-                avatar: "https://via.placeholder.com/50",
-                name: "John Doe",
-            },
-            date: "2024-12-10T10:30:00Z",
-            rating: 5,
-            content:
-                "Great shoes! Very comfortable and stylish. Would recommend to others.",
-        },
-        {
-            id: 2,
-            user: {
-                avatar: "https://via.placeholder.com/50",
-                name: "Jane Smith",
-            },
-            date: "2024-12-09T08:20:00Z",
-            rating: 4,
-            content:
-                "Good quality, but the fit was slightly smaller than expected.",
-        },
-        {
-            id: 3,
-            user: {
-                avatar: "https://via.placeholder.com/50",
-                name: "Mike Johnson",
-            },
-            date: "2024-12-08T15:45:00Z",
-            rating: 3,
-            content: "Average quality, not what I expected for the price.",
-        },
-        {
-            id: 4,
-            user: {
-                avatar: "https://via.placeholder.com/50",
-                name: "Alice Brown",
-            },
-            date: "2024-12-07T12:10:00Z",
-            rating: 2,
-            content: "Poor quality and not comfortable at all.",
-        },
-        {
-            id: 5,
-            user: {
-                avatar: "https://via.placeholder.com/50",
-                name: "Charlie Green",
-            },
-            date: "2024-12-06T09:00:00Z",
-            rating: 1,
-            content: "Terrible product. Broke after a week of use.",
-        },
-    ];
-};
-
-// Comment component
-const Comment = ({ user, date, rating, content }) => {
-    const formattedDate = new Date(date).toLocaleString();
-
-    return (
-        <div className="flex items-start mb-6">
-            <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-12 h-12 rounded-full mr-4"
-            />
-            <div className="flex-1">
-                <div className="flex justify-between items-center mb-2">
-                    <h4 className="text-lg font-semibold">{user.name}</h4>
-                    <span className="text-sm text-gray-500">
-                        {formattedDate}
-                    </span>
-                </div>
-                <div className="flex items-center mb-2">
-                    <div className="flex text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <svg
-                                key={index}
-                                xmlns="http://www.w3.org/2000/svg"
-                                className={`h-5 w-5 ${
-                                    index < rating
-                                        ? "text-yellow-400"
-                                        : "text-gray-300"
-                                }`}
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M12 .587l3.668 10.825h11.38l-9.056 6.571 3.44 10.826-9.057-6.571-9.058 6.571 3.441-10.826-9.057-6.571h11.381z" />
-                            </svg>
-                        ))}
-                    </div>
-                </div>
-                <p className="text-gray-700">{content}</p>
-            </div>
-        </div>
-    );
-};
-
-// Comment Section component
 const CommentSection = () => {
     const [comments, setComments] = useState([]);
     const [filterRating, setFilterRating] = useState(null); // Filter by rating
-    const [filteredComments, setFilteredComments] = useState([]);
     const [dateSortOrder, setDateSortOrder] = useState("desc"); // Sort order: asc or desc
+    const [filteredComments, setFilteredComments] = useState([]);
+    const [visibleComments, setVisibleComments] = useState(5); // Show initial 5 comments
+
+    // Updated fetchComments function based on the API
+    const fetchComments = () => {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve([
+                    {
+                        id: 1,
+                        username: "John Doe",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-07 00:28",
+                        comment:
+                            "This is the first comment. It contains some feedback about the product.",
+                    },
+                    {
+                        id: 2,
+                        username: "Jane Smith",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-08 14:45",
+                        comment: "Great product! Highly recommend it.",
+                    },
+                    {
+                        id: 3,
+                        username: "Alice Johnson",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 3,
+                        date: "2023-07-09 09:22",
+                        comment: "Decent quality but could be improved.",
+                    },
+                    {
+                        id: 4,
+                        username: "Bob Brown",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-10 12:00",
+                        comment:
+                            "I liked the product, but shipping was delayed.",
+                    },
+                    {
+                        id: 5,
+                        username: "Emma Wilson",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-11 16:30",
+                        comment:
+                            "Fantastic product! Will definitely buy again.",
+                    },
+                    {
+                        id: 6,
+                        username: "Chris Lee",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 2,
+                        date: "2023-07-12 08:45",
+                        comment: "Not satisfied with the quality.",
+                    },
+                    {
+                        id: 7,
+                        username: "Sarah Green",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-13 10:00",
+                        comment: "Good product overall, worth the price.",
+                    },
+                    {
+                        id: 8,
+                        username: "James White",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 3,
+                        date: "2023-07-14 15:00",
+                        comment: "Average experience, could be better.",
+                    },
+                    {
+                        id: 9,
+                        username: "Olivia Brown",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-15 18:00",
+                        comment: "Absolutely love this product!",
+                    },
+                    {
+                        id: 10,
+                        username: "Liam Johnson",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 1,
+                        date: "2023-07-16 09:00",
+                        comment: "Terrible quality. Not worth the money.",
+                    },
+                    {
+                        id: 11,
+                        username: "Mia Anderson",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-17 12:45",
+                        comment: "Highly recommend this product to everyone!",
+                    },
+                    {
+                        id: 12,
+                        username: "Ethan Martinez",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 3,
+                        date: "2023-07-18 13:30",
+                        comment: "It’s okay but not great.",
+                    },
+                    {
+                        id: 13,
+                        username: "Sophia Robinson",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-19 08:00",
+                        comment: "Good product, timely delivery.",
+                    },
+                    {
+                        id: 14,
+                        username: "Ava Garcia",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-20 09:30",
+                        comment:
+                            "Satisfactory purchase. Will consider buying again.",
+                    },
+                    {
+                        id: 15,
+                        username: "Noah Lee",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-21 10:00",
+                        comment: "Absolutely amazing! Exceeded expectations.",
+                    },
+                    {
+                        id: 16,
+                        username: "Isabella Gonzalez",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 2,
+                        date: "2023-07-22 11:30",
+                        comment:
+                            "Not what I expected. Quality could be better.",
+                    },
+                    {
+                        id: 17,
+                        username: "Lucas Clark",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-23 12:00",
+                        comment: "Good value for money.",
+                    },
+                    {
+                        id: 18,
+                        username: "Amelia Lewis",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 4,
+                        date: "2023-07-24 14:00",
+                        comment: "I’m happy with the purchase.",
+                    },
+                    {
+                        id: 19,
+                        username: "Oliver Young",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 5,
+                        date: "2023-07-25 15:30",
+                        comment: "Excellent product! Will buy again.",
+                    },
+                    {
+                        id: 20,
+                        username: "Elijah Walker",
+                        userImage:
+                            "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/409178481_2169379819932639_7576753703798547393_n.jpg?stp=c0.0.354.354a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=0ywgDmVIswcQ7kNvgEdYHEN&_nc_zt=24&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A_PZTTqcT3Yo48TF2Pd5G02&oh=00_AYDn-i5FfVbsM3iD9HgWrPOhJna821BOkD-CHPzNBSC4mA&oe=67604C5B",
+                        rating: 1,
+                        date: "2023-07-26 08:45",
+                        comment: "Very disappointed. Would not recommend.",
+                    },
+                ]);
+            }, 1000);
+        });
+    };
 
     useEffect(() => {
-        const fetchedComments = fetchComments();
-        setComments(fetchedComments);
+        // Fetch comments and set state
+        fetchComments().then((data) => {
+            setComments(data);
+        });
     }, []);
 
     useEffect(() => {
-        // Filter comments based on selected rating
+        // Filter and sort comments
         let filtered = comments;
+
         if (filterRating) {
             filtered = comments.filter(
                 (comment) => comment.rating === filterRating
             );
         }
-        // Sort comments by date
+
         filtered.sort((a, b) =>
             dateSortOrder === "asc"
                 ? new Date(a.date) - new Date(b.date)
                 : new Date(b.date) - new Date(a.date)
         );
+
         setFilteredComments(filtered);
     }, [comments, filterRating, dateSortOrder]);
 
-    const handleFilter = (rating) => {
-        setFilterRating(rating);
+    const handleFilterChange = (event) => {
+        setFilterRating(event.target.value || null);
     };
 
-    const calculateStarPercentage = () => {
-        const totalComments = comments.length;
-        const percentages = Array(5).fill(0);
-        comments.forEach((comment) => {
-            percentages[comment.rating - 1] += 1;
-        });
-        return percentages.map((count) =>
-            ((count / totalComments) * 100).toFixed(1)
-        );
+    const handleSortChange = (event) => {
+        setDateSortOrder(event.target.value || "desc");
     };
-
-    const starPercentages = calculateStarPercentage();
 
     return (
         <div className="my-6">
             <h2 className="text-2xl font-semibold mb-4">Customer Comments</h2>
 
-            <div className="flex flex-row justify-between">
-                {/* Horizontal Bar Chart */}
-                <div className="mb-6 w-[300px]">
-                    {starPercentages.map((percentage, index) => (
-                        <div key={index} className="flex items-center mb-2">
-                            <span className="text-sm w-10">{5 - index}★</span>
-                            <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-yellow-400"
-                                    style={{ width: `${percentage}%` }}
-                                ></div>
-                            </div>
-                            <span className="ml-2 text-sm text-gray-600">
-                                {percentage}%
-                            </span>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex flex-col">
-                    {/* Filter Buttons */}
-                    <div className="flex space-x-2 mb-6 flex-col items-center ">
-                        <button
-                            onClick={() => handleFilter(null)}
-                            className={`px-4 py-2 rounded-full w-36 mb-3 border-2 border-black hover:border-black ${
-                                filterRating === null
-                                    ? "bg-black text-white"
-                                    : "bg-white text-gray-800"
-                            }`}
-                        >
-                            All
-                        </button>
-                        <div className="flex flex-row justify-center  py-2 ">
-                            {[5, 4, 3, 2, 1].map((rating) => (
-                                <button
-                                    key={rating}
-                                    onClick={() => handleFilter(rating)}
-                                    className={`w-16 h-[50px] py-2 mr-2 rounded-full border-2 border-black hover:border-black flex items-center justify-center ${
-                                        filterRating === rating
-                                            ? "bg-black text-white"
-                                            : "bg-white text-gray-800"
-                                    }`}
-                                >
-                                    {rating}
-                                    <div className="flex justify-center items-center text-yellow-400 text-2xl">
-                                        ★
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Sort Menu */}
-                    <div className="mb-6">
-                        <SortMenu
-                            dateSortOrder={dateSortOrder}
-                            setDateSortOrder={setDateSortOrder}
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <FilterMenu
-                            filter={filterRating}
-                            setFilter={setFilterRating}
-                        />
-                    </div>
-                </div>
+            {/* Filter and Sort Controls */}
+            <div className="flex flex-row justify-between items-center mb-4">
+                {/* Filter by Star */}
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    style={{ width: "45%" }}
+                >
+                    <InputLabel>Filter by Star</InputLabel>
+                    <Select
+                        value={filterRating || ""}
+                        onChange={handleFilterChange}
+                        label="Filter by Star"
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value={5}>5 Stars</MenuItem>
+                        <MenuItem value={4}>4 Stars</MenuItem>
+                        <MenuItem value={3}>3 Stars</MenuItem>
+                        <MenuItem value={2}>2 Stars</MenuItem>
+                        <MenuItem value={1}>1 Star</MenuItem>
+                    </Select>
+                </FormControl>
+                {/* Sort by Timestamp */}
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    style={{ width: "45%" }}
+                >
+                    <InputLabel>Sort by</InputLabel>
+                    <Select
+                        value={dateSortOrder}
+                        onChange={handleSortChange}
+                        label="Sort by"
+                    >
+                        <MenuItem value="desc">Newest</MenuItem>
+                        <MenuItem value="asc">Oldest</MenuItem>
+                    </Select>
+                </FormControl>
             </div>
 
             {/* Comments */}
-            {filteredComments.length > 0 ? (
-                filteredComments.map((comment) => (
-                    <Comment
-                        key={comment.id}
-                        user={comment.user}
-                        date={comment.date}
-                        rating={comment.rating}
-                        content={comment.content}
+            {filteredComments.slice(0, visibleComments).map((comment) => (
+                <div key={comment.id} className="flex items-start mb-4">
+                    <img
+                        src={comment.userImage}
+                        alt={comment.username}
+                        className="w-12 h-12 rounded-full mr-4"
                     />
-                ))
-            ) : (
-                <p className="text-gray-500">No comments to display.</p>
+                    <div>
+                        <h4 className="text-lg font-semibold">
+                            {comment.username}
+                        </h4>
+                        <p className="text-gray-500 text-sm">
+                            {new Date(comment.date).toLocaleString()}
+                        </p>
+                        <div className="flex text-yellow-400 my-2">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <svg
+                                    key={i}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className={`h-5 w-5 ${
+                                        i < comment.rating
+                                            ? "text-yellow-400"
+                                            : "text-gray-300"
+                                    }`}
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M12 .587l3.668 10.825h11.38l-9.056 6.571 3.44 10.826-9.057-6.571-9.058 6.571 3.441-10.826-9.057-6.571h11.381z" />
+                                </svg>
+                            ))}
+                        </div>
+                        <p>{comment.comment}</p>
+                    </div>
+                </div>
+            ))}
+
+            {/* Show More Button */}
+            {visibleComments < filteredComments.length && (
+                <div className="flex justify-center mt-4">
+                    <Button
+                        variant="contained"
+                        onClick={() => setVisibleComments((prev) => prev + 5)} // Load 5 more comments
+                    >
+                        Show More
+                    </Button>
+                </div>
             )}
         </div>
     );
 };
 
 export default CommentSection;
-
-const SortMenu = ({ dateSortOrder, setDateSortOrder }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    const handleSortOption = (order) => {
-        setDateSortOrder(order);
-        setIsMenuOpen(false); // Close the menu after selection
-    };
-
-    return (
-        <>
-            <button
-                id="dropdownMenuIconHorizontalButton"
-                data-dropdown-toggle="dropdownDotsHorizontal"
-                className="inline-flex items-center p-2 text-sm font-medium text-center border border-black text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                type="button"
-            >
-                <p>SORT</p>
-            </button>
-
-            <div
-                id="dropdownDotsHorizontal"
-                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-            >
-                <ul
-                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownMenuIconHorizontalButton"
-                >
-                    <li>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Most Recent
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Most Helpful
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Highest Rated
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            Lowest Rated
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </>
-    );
-};
-
-const FilterMenu = ({ filter, setFilter }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    const handleFilter = (f) => {
-        setDateSortOrder(f);
-        setIsMenuOpen(false); // Close the menu after selection
-    };
-
-    return (
-        <>
-            <button
-                id="dropdownMenuIconHorizontalButton1"
-                data-dropdown-toggle="123"
-                className="inline-flex items-center p-2 text-sm font-medium text-center border border-black text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                type="button"
-            >
-                <p>FILTER</p>
-            </button>
-
-            <div
-                id="123"
-                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-            >
-                <ul
-                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownMenuIconHorizontalButton1"
-                >
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                        <li key={rating}>
-                            <button
-                                key={rating}
-                                onClick={() => handleFilter(rating)}
-                                className=" flex flex-row border border-black  items-center px-4 py-2 text-[1.25rem] w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                            >
-                                {rating}
-                                <div className="flex justify-center items-center text-yellow-400 text-2xl">
-                                    ★
-                                </div>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </>
-    );
-};

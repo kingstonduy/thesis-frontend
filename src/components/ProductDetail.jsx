@@ -63,8 +63,8 @@ const ProductDetailPage = () => {
     if (!product) return <div>Loading...</div>;
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <div className="flex flex-col lg:flex-row gap-8">
+        <div className="max-w-6xl mx-auto p-6 ">
+            <div className="flex flex-col lg:flex-row gap-8 min-h-[1000px]">
                 {/* Product Image */}
                 <div className="flex-shrink-0 w-full lg:w-1/2">
                     <img
