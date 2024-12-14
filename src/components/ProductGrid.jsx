@@ -63,7 +63,7 @@ const ProductGrid = () => {
     };
 
     return (
-        <div className="pr-32 pl-32 pt-10 pd-10">
+        <div className="pr-32 pl-32 pt-10 pd-10 min-h-[1000px]">
             {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product) => (

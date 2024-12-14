@@ -10,6 +10,9 @@ import ProductDetailPage from "./components/ProductDetail";
 import { message } from "antd";
 import LoginPage from "./components/Login";
 import UserProfilePage from "./components/UserProfile";
+import AboutUs from "./components/AboutUs";
+import FooterPage from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -29,6 +32,8 @@ function App() {
                     return (
                         <BrowserRouter basename="/thesis-frontend/">
                             <Header setIsLoggedIn={setIsLoggedIn} />
+                            <ScrollToTop />
+
                             <Routes>
                                 <Route path="/" element={<LandingPage />} />
                                 <Route path="/home" element={<LandingPage />} />
@@ -52,7 +57,9 @@ function App() {
                                     path="/user-profile"
                                     element={<UserProfilePage />}
                                 />
+                                <Route path="/about-us" element={<AboutUs />} />
                             </Routes>
+                            <FooterPage />
                         </BrowserRouter>
                     );
                 }

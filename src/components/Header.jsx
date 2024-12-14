@@ -69,7 +69,7 @@ const Header = ({ setIsLoggedIn }) => {
         { name: "Men", link: "/" },
         { name: "Women", link: "/" },
         { name: "All product", link: "/products" },
-        { name: "About us", link: "/" },
+        { name: "About us", link: "/about-us" },
     ];
 
     // Renders the header component, including navigation, cart, and search tray

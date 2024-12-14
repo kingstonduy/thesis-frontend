@@ -1,7 +1,6 @@
-import { Nav } from "./components";
+import { useEffect } from "react";
 import {
     CustomerReviews,
-    Footer,
     Hero,
     PopularProducts,
     Services,
@@ -33,9 +32,6 @@ const LandingPage = () => {
             </section>
             <section className="padding-x sm:py-32 py-16 w-full">
                 <Subscribe />
-            </section>
-            <section className=" bg-black padding-x padding-t pb-8">
-                <Footer />
             </section>
         </div>
     );
