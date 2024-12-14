@@ -227,7 +227,9 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "city"}
                             >
-                                <option value="">{address.city}</option>
+                                <option value={address.city}>
+                                    {address.city}
+                                </option>
                                 {locations.cities.map((city) => (
                                     <option key={city.Id} value={city.Id}>
                                         {city.Name}
@@ -258,7 +260,9 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "district"}
                             >
-                                <option value="">{address.district}</option>
+                                <option value={address.district}>
+                                    {address.district}
+                                </option>
                                 {locations.districts.map((district) => (
                                     <option
                                         key={district.Id}
@@ -292,7 +296,9 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "ward"}
                             >
-                                <option value="">{address.ward}</option>
+                                <option value={address.ward}>
+                                    {address.ward}
+                                </option>
                                 {locations.wards.map((ward) => (
                                     <option key={ward.Id} value={ward.Id}>
                                         {ward.Name}
