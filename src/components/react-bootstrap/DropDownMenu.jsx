@@ -39,12 +39,12 @@ function DropDownMenu({ setIsLoggedIn }) {
                         </Link>
                     </Dropdown.Item>
                     <Dropdown.Item>
-                        <a
-                            href="#"
+                        <Link
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            to={"/order"}
                         >
                             Purchase
-                        </a>
+                        </Link>
                     </Dropdown.Item>
                     <Dropdown.Item>
                         <button

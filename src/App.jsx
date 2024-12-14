@@ -13,6 +13,7 @@ import UserProfilePage from "./components/UserProfile";
 import AboutUs from "./components/AboutUs";
 import FooterPage from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import OrderTracking from "./components/Order";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -58,6 +59,10 @@ function App() {
                                     element={<UserProfilePage />}
                                 />
                                 <Route path="/about-us" element={<AboutUs />} />
+                                <Route
+                                    path="/order"
+                                    element={<OrderTracking />}
+                                />
                             </Routes>
                             <FooterPage />
                         </BrowserRouter>
