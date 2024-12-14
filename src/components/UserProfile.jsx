@@ -11,9 +11,12 @@ const UserProfilePage = () => {
     });
 
     const [address, setAddress] = useState({
-        city: "Ho Chi Minh",
-        district: "Hoc Mon",
-        ward: "Nhi Binh",
+        cityID: "290",
+        city: "Thành phố Hồ Chí Minh",
+        districtID: "784",
+        district: "Huyện Hóc Môn",
+        wardID: "27565",
+        ward: "Xã Nhị Bình",
         street: "123 Bui Cong Trung",
     });
 
@@ -110,7 +113,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             Phone Number
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <input
                                 name="phone"
                                 value={formData.phone}
@@ -124,7 +127,7 @@ const UserProfilePage = () => {
                                 disabled={editingField !== "phone"}
                             />
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className=" text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("phone")}
                             >
                                 &#9998;
@@ -135,7 +138,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             Gender
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <select
                                 name="gender"
                                 value={formData.gender}
@@ -152,7 +155,7 @@ const UserProfilePage = () => {
                                 <option value="Other">Other</option>
                             </select>
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className=" text-gray-500 cursor-pointer "
                                 onClick={() => handleFieldEdit("gender")}
                             >
                                 &#9998;
@@ -163,7 +166,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             Date of Birth
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <input
                                 name="dob"
                                 value={formData.dob}
@@ -177,7 +180,7 @@ const UserProfilePage = () => {
                                 disabled={editingField !== "dob"}
                             />
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className=" text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("dob")}
                             >
                                 &#9998;
@@ -188,9 +191,9 @@ const UserProfilePage = () => {
                     {/* Address Fields */}
                     <div>
                         <label className="block text-sm font-medium mb-2">
-                            Street (Default: 123 Default Street)
+                            Street
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <input
                                 name="street"
                                 value={address.street}
@@ -204,7 +207,7 @@ const UserProfilePage = () => {
                                 disabled={editingField !== "street"}
                             />
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className="text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("street")}
                             >
                                 &#9998;
@@ -215,7 +218,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             City
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <select
                                 name="city"
                                 value={address.city}
@@ -227,7 +230,7 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "city"}
                             >
-                                <option value={address.city}>
+                                <option value={address.city.Id}>
                                     {address.city}
                                 </option>
                                 {locations.cities.map((city) => (
@@ -237,7 +240,7 @@ const UserProfilePage = () => {
                                 ))}
                             </select>
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className="text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("city")}
                             >
                                 &#9998;
@@ -248,7 +251,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             District
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <select
                                 name="district"
                                 value={address.district}
@@ -260,7 +263,7 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "district"}
                             >
-                                <option value={address.district}>
+                                <option value={address.district.Id}>
                                     {address.district}
                                 </option>
                                 {locations.districts.map((district) => (
@@ -273,7 +276,7 @@ const UserProfilePage = () => {
                                 ))}
                             </select>
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className="text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("district")}
                             >
                                 &#9998;
@@ -284,7 +287,7 @@ const UserProfilePage = () => {
                         <label className="block text-sm font-medium mb-2">
                             Ward
                         </label>
-                        <div className="relative">
+                        <div className="relative flex">
                             <select
                                 name="ward"
                                 value={address.ward}
@@ -296,7 +299,7 @@ const UserProfilePage = () => {
                                 }`}
                                 disabled={editingField !== "ward"}
                             >
-                                <option value={address.ward}>
+                                <option value={address.ward.Id}>
                                     {address.ward}
                                 </option>
                                 {locations.wards.map((ward) => (
@@ -306,7 +309,7 @@ const UserProfilePage = () => {
                                 ))}
                             </select>
                             <span
-                                className="absolute right-2 top-2 text-gray-500 cursor-pointer"
+                                className="text-gray-500 cursor-pointer"
                                 onClick={() => handleFieldEdit("ward")}
                             >
                                 &#9998;
