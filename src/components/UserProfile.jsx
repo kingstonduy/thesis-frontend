@@ -80,7 +80,7 @@ const UserProfilePage = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded-lg">
+        <div className="max-w-2xl  my-16 mx-auto p-6 bg-white shadow rounded-lg">
             <h1 className="text-2xl font-semibold mb-6">User Profile</h1>
             <form onSubmit={handleSubmit}>
                 <div className="space-y-6">
