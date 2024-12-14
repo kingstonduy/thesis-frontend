@@ -4,7 +4,7 @@ import SearchTray from "./SearchTray";
 import DropDownMenu from "./react-bootstrap/DropDownMenu";
 import { useNavigate } from "react-router-dom";
 
-const Header = ({ isLoggedIn }) => {
+const Header = ({ setIsLoggedIn }) => {
     const navigate = useNavigate();
     const [isTrayOpen, setIsTrayOpen] = useState(false); // State to track if the search tray is open
     const [isCartOpen, setIsCartOpen] = useState(false); // State to track if the cart panel is open
@@ -137,7 +137,7 @@ const Header = ({ isLoggedIn }) => {
                             </div>
 
                             {/* Avatar Icon (Dropdown) */}
-                            <DropDownMenu />
+                            <DropDownMenu setIsLoggedIn={setIsLoggedIn} />
 
                             {/* Cart Icon */}
                             <div

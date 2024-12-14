@@ -1,6 +1,11 @@
 import Dropdown from "react-bootstrap/Dropdown";
+import { Link } from "react-router-dom";
 
-function DropDownMenu() {
+function DropDownMenu({ setIsLoggedIn }) {
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+    };
+
     return (
         <div className="relative group">
             <Dropdown className="flex justify-center items-center w-full bg-black">
@@ -26,12 +31,12 @@ function DropDownMenu() {
 
                 <Dropdown.Menu>
                     <Dropdown.Item>
-                        <a
-                            href="#"
+                        <Link
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            to={"/user-profile"}
                         >
                             My Account
-                        </a>
+                        </Link>
                     </Dropdown.Item>
                     <Dropdown.Item>
                         <a
@@ -42,12 +47,12 @@ function DropDownMenu() {
                         </a>
                     </Dropdown.Item>
                     <Dropdown.Item>
-                        <a
-                            href="#"
+                        <button
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                            onClick={handleLogout}
                         >
                             Logout
-                        </a>
+                        </button>
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
