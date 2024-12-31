@@ -1,26 +1,89 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+
+// Create the product client
+export const productClient = axios.create({
+    baseURL: "http://localhost:7002",
+});
+
+// Use existing function to fetch products
+export const productGetProducts = (object) =>
+    productClient.post("/is/v1/product-service/get-products", object);
 
 const ProductGrid = () => {
-    const pageSize = 28; // 4 columns x 7 rows
+    const pageSize = 24; // Set maximum products per page to 32
     const [currentPage, setCurrentPage] = useState(1);
+    const [allProducts, setAllProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [maxPages, setMaxPages] = useState(0);
     const navigate = useNavigate(); // Initialize the navigate function
 
-    // Fetch data from the simulated API
-    const fetchProducts = (page) => {
-        const { products, maxPages } = simulateApi(page, pageSize);
-        setProducts(products);
-        setMaxPages(maxPages);
+    // Fetch all products and calculate pagination
+    const fetchAllProducts = async () => {
+        const timestamp = Date.now(); // Current timestamp as a numeric value
+        const guid = crypto.randomUUID(); // Generate a unique GUID (modern browsers support this)
 
-        // Scroll to top when fetching a new page
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const requestBody = {
+            data: {},
+            trace: {
+                frm: "local",
+                to: "product-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+
+        try {
+            const response = await productGetProducts(requestBody);
+
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+                return;
+            }
+
+            const fetchedProducts = response.data.data.products.map(
+                (product) => ({
+                    id: product.productId,
+                    name: product.productName,
+                    price: product.productPrice,
+                    rating: product.averageRating,
+                    image: product.productImage,
+                })
+            );
+
+            setAllProducts(fetchedProducts);
+
+            const calculatedMaxPages = Math.ceil(
+                fetchedProducts.length / pageSize
+            );
+            setMaxPages(calculatedMaxPages);
+            updatePageProducts(1, fetchedProducts);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            alert("Failed to fetch products. Please try again later.");
+        }
+    };
+
+    // Update products for the current page
+    const updatePageProducts = (page, fetchedProducts = allProducts) => {
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        setProducts(fetchedProducts.slice(startIndex, endIndex));
     };
 
     // Initial data fetch
     useEffect(() => {
-        fetchProducts(currentPage);
+        fetchAllProducts();
+    }, []);
+
+    // Update products when currentPage changes
+    useEffect(() => {
+        updatePageProducts(currentPage);
     }, [currentPage]);
 
     // Generate dynamic pagination range
@@ -122,36 +185,6 @@ const ProductGrid = () => {
             </div>
         </div>
     );
-};
-
-// Simulated API function
-const simulateApi = (page, pageSize, totalProducts = 20000) => {
-    const fakeProducts = Array.from({ length: totalProducts }, (_, i) => ({
-        id: i + 1,
-        name: `Product ${i + 1}`,
-        price: (Math.random() * 100).toFixed(2),
-        rating: (Math.random() * 5).toFixed(1),
-        image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
-    }));
-
-    const totalPages = Math.ceil(totalProducts / pageSize);
-
-    if (page > totalPages || page < 1) {
-        return {
-            products: [],
-            maxPages: totalPages,
-        };
-    }
-
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    const products = fakeProducts.slice(startIndex, endIndex);
-
-    return {
-        products,
-        maxPages: totalPages,
-    };
 };
 
 export default ProductGrid;
