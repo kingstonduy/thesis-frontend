@@ -84,6 +84,7 @@ const ProductGrid = () => {
     // Update products when currentPage changes
     useEffect(() => {
         updatePageProducts(currentPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, [currentPage]);
 
     // Generate dynamic pagination range
