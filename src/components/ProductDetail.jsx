@@ -1,39 +1,74 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { productClient } from "./api-client/productClient";
 import CommentSection from "./Comment";
+
+export const productGetProductDetail = (object) =>
+    productClient.post("/is/v1/product-service/get-product-detail", object);
 
 const ProductDetailPage = () => {
     const { productId } = useParams(); // Get product ID from URL
     const [product, setProduct] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
 
-    // Example product data (In a real app, you'd fetch this from an API)
     useEffect(() => {
-        const fetchProduct = async () => {
-            const product = {
-                id: "1",
-                name: "Stylish Sneaker",
-                category: "Men's Sneakers",
-                price: "$129.99",
-                description: {
-                    Description:
-                        "We loaded the Revolution 7 with the sort of soft cushioning and support that might change your running world. Stylish as ever, comfortable when the rubber meets the road and performance-driven for your desired pace, it's an evolution of a fan favourite that offers a soft, smooth ride. We added the quick-and-easy toggle system that makes putting these shoes on and taking them off a breeze.",
-                    Material: "High-quality synthetic leather",
-                    Features: [
-                        "Breathable mesh",
-                        "Rubber outsole",
-                        "Padded collar",
-                    ],
-                    Care: "Wipe with a damp cloth, do not machine wash",
-                    Origin: "This product was responsibly designed utilising recycled materials from post-consumer and/or post-manufactured waste. One of our biggest steps on our journey to zero carbon and zero waste is in choosing our materials because they account for more than 70% of any product's footprint. By reusing existing plastics, yarns and textiles, we significantly reduce our emissions. Our goal is to use as many recycled materials as possible without compromising on performance, durability and style.",
+        const fetchProductDetail = async () => {
+            console.log(productId);
+            const timestamp = Date.now(); // Current timestamp as a numeric value
+            const guid = crypto.randomUUID(); // Generate a unique GUID
+
+            const requestBody = {
+                trace: {
+                    frm: "local",
+                    to: "product-service",
+                    cts: timestamp,
+                    cid: guid,
                 },
-                sizes: ["7", "8.5", "9", "10", "10.5", "11", "11.5", "12"],
-                image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
+                data: {
+                    productId: productId, // Use the productId from URL params
+                },
             };
-            setProduct(product);
+
+            try {
+                const response = await productGetProductDetail(requestBody);
+
+                if (response.data.result.code !== "00") {
+                    alert(
+                        `Error: ${
+                            response.data.result.message || "Unknown error"
+                        }`
+                    );
+                    console.error("Details:", response.data.result.details);
+                    return;
+                }
+
+                const parsedDescription = JSON.parse(
+                    response.data.data.productDescription
+                );
+
+                const fetchedProduct = {
+                    id: response.data.data.productId,
+                    name: response.data.data.productName,
+                    category: response.data.data.productCatergory,
+                    price: `₫${response.data.data.productPrice.toLocaleString()}`,
+                    description: {
+                        main: parsedDescription.description,
+                        benefits: parsedDescription.benefits,
+                        details: parsedDescription.product_details,
+                    },
+                    image: response.data.data.productImage,
+                };
+
+                setProduct(fetchedProduct);
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                alert(
+                    "Failed to fetch product details. Please try again later."
+                );
+            }
         };
 
-        fetchProduct();
+        fetchProductDetail();
     }, [productId]);
 
     const handleSizeSelect = (size) => {
@@ -42,22 +77,6 @@ const ProductDetailPage = () => {
 
     const handleAddToCart = () => {
         alert("Sneaker added to cart!");
-    };
-
-    const renderDescription = (description) => {
-        return Object.entries(description).map(([key, value]) => (
-            <div key={key} className="mb-4">
-                {Array.isArray(value) ? (
-                    <ul className="list-disc pl-5">
-                        {value.map((item, index) => (
-                            <li key={index}>{item}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>{value}</p>
-                )}
-            </div>
-        ));
     };
 
     if (!product) return <div>Loading...</div>;
@@ -77,28 +96,26 @@ const ProductDetailPage = () => {
                 {/* Product Info */}
                 <div className="flex-1">
                     {/* Product Name */}
-                    <h1 className="text-customGray font-medium text-[20px] mb-2">
+                    <h1 className="text-customGray font-medium text-[30px] mb-2">
                         {product.name}
                     </h1>
 
                     {/* Product Category */}
-                    <p className="text-customGray text-[16px] mb-2">
-                        {product.category}
+                    <p className="text-customGray text-[23px] mb-2">
+                        <h2 className="text-[18px] font-semibold mb-2">
+                            {product.category}
+                        </h2>
                     </p>
 
                     {/* Product Price */}
-                    <p className="text-customGray text-[16px] mb-4">
+                    <p className="text-customGray text-[20px] mb-4">
                         {product.price}
                     </p>
 
                     {/* Size Selector */}
                     <div className="mb-6">
-                        <h2 className="text-[16px] font-semibold mb-2">
-                            Select Size{" "}
-                            <span className="text-sm">(Size Guide)</span>
-                        </h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {product.sizes.map((size, index) => (
+                            {product.sizes?.map((size, index) => (
                                 <button
                                     key={index}
                                     id={`size-${size}`}
@@ -130,7 +147,28 @@ const ProductDetailPage = () => {
                         <h2 className="text-lg font-semibold text-gray-800 mb-2">
                             Description
                         </h2>
-                        {renderDescription(product.description)}
+                        <p>{product.description.main}</p>
+                        <br></br>
+                        <h3 className="text-md font-semibold text-gray-800 mb-2">
+                            Benefits
+                        </h3>
+                        <ul className="list-disc pl-5 mb-4">
+                            {product.description.benefits.map(
+                                (benefit, index) => (
+                                    <li key={index}>{benefit}</li>
+                                )
+                            )}
+                        </ul>
+                        <h3 className="text-md font-semibold text-gray-800 mb-2">
+                            Details
+                        </h3>
+                        <ul className="list-disc pl-5">
+                            {product.description.details.map(
+                                (detail, index) => (
+                                    <li key={index}>{detail}</li>
+                                )
+                            )}
+                        </ul>
                     </div>
                 </div>
             </div>
