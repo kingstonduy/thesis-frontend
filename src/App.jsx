@@ -14,9 +14,10 @@ import AboutUs from "./components/AboutUs";
 import FooterPage from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import OrderTracking from "./components/Order";
+import RegisterPage from "./components/Register";
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     function handleLogin(e) {
         console.log(e);
@@ -25,51 +26,40 @@ function App() {
     }
 
     return (
-        <>
-            {(() => {
-                if (!isLoggedIn) {
-                    return <LoginPage handleLogin={handleLogin} />;
-                } else {
-                    return (
-                        <BrowserRouter basename="/thesis-frontend/">
-                            <Header setIsLoggedIn={setIsLoggedIn} />
-                            <ScrollToTop />
-
-                            <Routes>
-                                <Route path="/" element={<LandingPage />} />
-                                <Route path="/home" element={<LandingPage />} />
-                                <Route
-                                    path="/menu"
-                                    element={<DropDownMenu />}
-                                />
-                                <Route
-                                    path="/products"
-                                    element={<ProductGrid />}
-                                />
-                                <Route
-                                    path="/checkout"
-                                    element={<CheckoutPage />}
-                                />
-                                <Route
-                                    path="/product/:productId"
-                                    element={<ProductDetailPage />}
-                                />
-                                <Route
-                                    path="/user-profile"
-                                    element={<UserProfilePage />}
-                                />
-                                <Route path="/about-us" element={<AboutUs />} />
-                                <Route
-                                    path="/order"
-                                    element={<OrderTracking />}
-                                />
-                            </Routes>
-                            <FooterPage />
-                        </BrowserRouter>
-                    );
-                }
-            })()}
-        </>
+        <BrowserRouter basename="/thesis-frontend/">
+            {isLoggedIn ? (
+                <>
+                    <Header setIsLoggedIn={setIsLoggedIn} />
+                    <ScrollToTop />
+                    <Routes>
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/home" element={<LandingPage />} />
+                        <Route path="/menu" element={<DropDownMenu />} />
+                        <Route path="/products" element={<ProductGrid />} />
+                        <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route
+                            path="/product/:productId"
+                            element={<ProductDetailPage />}
+                        />
+                        <Route
+                            path="/user-profile"
+                            element={<UserProfilePage />}
+                        />
+                        <Route path="/about-us" element={<AboutUs />} />
+                        <Route path="/order" element={<OrderTracking />} />
+                    </Routes>
+                    <FooterPage />
+                </>
+            ) : (
+                <Routes>
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route
+                        path="*"
+                        element={<LoginPage handleLogin={handleLogin} />}
+                    />
+                </Routes>
+            )}
+        </BrowserRouter>
     );
 }
 
