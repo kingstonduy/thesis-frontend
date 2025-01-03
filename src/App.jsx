@@ -15,6 +15,8 @@ import FooterPage from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import OrderTracking from "./components/Order";
 import RegisterPage from "./components/Register";
+import ProductGenderWoMen from "./components/ProductGridGenderWomen";
+import ProductGenderMen from "./components/ProductGridGenderMen";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -47,6 +49,14 @@ function App() {
                         />
                         <Route path="/about-us" element={<AboutUs />} />
                         <Route path="/order" element={<OrderTracking />} />
+                        <Route
+                            path="/products-gender-men"
+                            element={<ProductGenderMen />}
+                        />
+                        <Route
+                            path="/products-gender-women"
+                            element={<ProductGenderWoMen />}
+                        />
                     </Routes>
                     <FooterPage />
                 </>

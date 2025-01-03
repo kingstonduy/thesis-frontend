@@ -13,7 +13,6 @@ const ProductDetailPage = () => {
 
     useEffect(() => {
         const fetchProductDetail = async () => {
-            console.log(productId);
             const timestamp = Date.now(); // Current timestamp as a numeric value
             const guid = crypto.randomUUID(); // Generate a unique GUID
 
@@ -50,11 +49,20 @@ const ProductDetailPage = () => {
                     id: response.data.data.productId,
                     name: response.data.data.productName,
                     category: response.data.data.productCatergory,
-                    price: `₫${response.data.data.productPrice.toLocaleString()}`,
+                    price: `$${Number(
+                        response.data.data.productPrice
+                    ).toLocaleString()}`,
                     description: {
-                        main: parsedDescription.description,
-                        benefits: parsedDescription.benefits,
-                        details: parsedDescription.product_details,
+                        benefits: parsedDescription.benefits.map((item) => ({
+                            header: item.header,
+                            body: item.body,
+                        })),
+                        details: parsedDescription.product_details.map(
+                            (detail) => ({
+                                header: detail.header,
+                                body: detail.body,
+                            })
+                        ),
                     },
                     image: response.data.data.productImage,
                 };
@@ -101,36 +109,16 @@ const ProductDetailPage = () => {
                     </h1>
 
                     {/* Product Category */}
-                    <p className="text-customGray text-[23px] mb-2">
+                    <div className="text-customGray text-[23px] mb-2">
                         <h2 className="text-[18px] font-semibold mb-2">
                             {product.category}
                         </h2>
-                    </p>
+                    </div>
 
                     {/* Product Price */}
                     <p className="text-customGray text-[20px] mb-4">
                         {product.price}
                     </p>
-
-                    {/* Size Selector */}
-                    <div className="mb-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {product.sizes?.map((size, index) => (
-                                <button
-                                    key={index}
-                                    id={`size-${size}`}
-                                    onClick={() => handleSizeSelect(size)}
-                                    className={`w-[86px] h-[46px] rounded-lg border-2 text-[16px] font-medium transition-colors ${
-                                        selectedSize === size
-                                            ? "bg-black text-white border-black"
-                                            : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-black"
-                                    }`}
-                                >
-                                    US {size}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
 
                     {/* Add to Cart Button */}
                     <div className="mb-6">
@@ -144,28 +132,44 @@ const ProductDetailPage = () => {
 
                     {/* Description */}
                     <div className="mb-6">
-                        <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                            Description
-                        </h2>
-                        <p>{product.description.main}</p>
-                        <br></br>
-                        <h3 className="text-md font-semibold text-gray-800 mb-2">
+                        <h3 className="text-customGray font-medium text-[30px] mb-2">
                             Benefits
                         </h3>
-                        <ul className="list-disc pl-5 mb-4">
+                        <ul className="list-outside pl-5 mb-4">
+                            <br />
                             {product.description.benefits.map(
                                 (benefit, index) => (
-                                    <li key={index}>{benefit}</li>
+                                    <li key={index}>
+                                        <strong>{benefit.header}:</strong>
+                                        <ul className="list-disc pl-5">
+                                            <br />
+                                            {benefit.body.map((point, idx) => (
+                                                <li key={idx}>{point}</li>
+                                            ))}
+                                        </ul>
+                                        <br />
+                                    </li>
                                 )
                             )}
                         </ul>
-                        <h3 className="text-md font-semibold text-gray-800 mb-2">
+                        <h3 className="text-customGray font-medium text-[30px] mb-2">
                             Details
                         </h3>
-                        <ul className="list-disc pl-5">
+                        <ul className="list-outside pl-5">
                             {product.description.details.map(
                                 (detail, index) => (
-                                    <li key={index}>{detail}</li>
+                                    <li key={index}>
+                                        <div className="mb-3">
+                                            <strong>{detail.header}:</strong>
+                                        </div>
+                                        <ul className="list-disc pl-5">
+                                            {detail.body.map((point, idx) => (
+                                                <li key={idx} className="mb-2">
+                                                    {point}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
                                 )
                             )}
                         </ul>

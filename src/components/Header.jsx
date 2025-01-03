@@ -66,8 +66,14 @@ const Header = ({ setIsLoggedIn }) => {
     // Navigation items for the header navbar
     const Navbar = [
         { name: "Home", link: "/home" },
-        { name: "Men", link: "/" },
-        { name: "Women", link: "/" },
+        {
+            name: "Men",
+            link: "/products-gender-men",
+        },
+        {
+            name: "Women",
+            link: "/products-gender-women",
+        },
         { name: "All product", link: "/products" },
         { name: "About us", link: "/about-us" },
     ];
@@ -108,7 +114,8 @@ const Header = ({ setIsLoggedIn }) => {
                         {/* Icons Section (Search, Avatar, Cart) */}
                         <div className="nav-icon right-0 flex flex-row items-center justify-between gap-x-6 pl-[5px] pr-[15px]">
                             {/* Search Icon */}
-                            <div className="py-3 relative ml-auto transition-all duration-500 ease-in-out">
+                            {/* TODO add this feature */}
+                            {/* <div className="py-3 relative ml-auto transition-all duration-500 ease-in-out">
                                 <button
                                     className="flex items-center w-[80px] bg-white border h-[40px] border-gray-300 rounded-full px-2 py-2 shadow transition-all duration-500 ease-in-out cursor-pointer hover:bg-gray-500"
                                     onClick={openTray}
@@ -134,7 +141,7 @@ const Header = ({ setIsLoggedIn }) => {
                                         />
                                     </svg>
                                 </button>
-                            </div>
+                            </div> */}
 
                             {/* Avatar Icon (Dropdown) */}
                             <DropDownMenu setIsLoggedIn={setIsLoggedIn} />

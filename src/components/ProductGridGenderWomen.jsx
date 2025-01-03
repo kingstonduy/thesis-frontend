@@ -1,17 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { productGetProductByGender } from "./api-client/productClient";
 
-// Create the product client
-export const productClient = axios.create({
-    baseURL: "http://localhost:7002",
-});
-
-// Use existing function to fetch products
-export const productGetProducts = (object) =>
-    productClient.post("/is/v1/product-service/get-products", object);
-
-const ProductGrid = () => {
+const ProductGenderWoMen = () => {
+    const gender = "women";
     const pageSize = 24; // Set maximum products per page to 32
     const [currentPage, setCurrentPage] = useState(1);
     const [allProducts, setAllProducts] = useState([]);
@@ -25,7 +19,9 @@ const ProductGrid = () => {
         const guid = crypto.randomUUID(); // Generate a unique GUID (modern browsers support this)
 
         const requestBody = {
-            data: {},
+            data: {
+                gender: gender,
+            },
             trace: {
                 frm: "local",
                 to: "product-service",
@@ -35,8 +31,8 @@ const ProductGrid = () => {
         };
 
         try {
-            const response = await productGetProducts(requestBody);
-
+            const response = await productGetProductByGender(requestBody);
+            console.log("response" + response);
             if (response.data.result.code !== "00") {
                 // Show alert if code is not "00"
                 alert(
@@ -46,7 +42,7 @@ const ProductGrid = () => {
                 return;
             }
 
-            const fetchedProducts = response.data.data.products.map(
+            const fetchedProducts = response.data.data.details.map(
                 (product) => ({
                     id: product.productId,
                     name: product.productName,
@@ -78,6 +74,7 @@ const ProductGrid = () => {
 
     // Initial data fetch
     useEffect(() => {
+        console.log("filter=%s", gender);
         fetchAllProducts();
     }, []);
 
@@ -188,4 +185,4 @@ const ProductGrid = () => {
     );
 };
 
-export default ProductGrid;
+export default ProductGenderWoMen;

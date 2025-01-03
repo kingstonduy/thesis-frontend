@@ -116,7 +116,7 @@ const CheckoutPage = () => {
 
                                         <td className="px-4 py-2 text-black  ">
                                             {item.price.toLocaleString("vi-VN")}
-                                            ₫
+                                            $
                                         </td>
 
                                         <td className="px-4 py-2 text-left">
@@ -129,7 +129,7 @@ const CheckoutPage = () => {
                                             {(
                                                 item.price * item.quantity
                                             ).toLocaleString("vi-VN")}
-                                            ₫
+                                            $
                                         </td>
                                     </tr>
                                 ))}
@@ -150,7 +150,7 @@ const CheckoutPage = () => {
                         <div className="flex justify-between items-center py-2 border-b">
                             <div className="text-black">Subtotal</div>
                             <div className="text-lg font-semibold text-black">
-                                ₫11,676,000
+                                $11,676,000
                             </div>
                         </div>
 
@@ -170,7 +170,7 @@ const CheckoutPage = () => {
                                 Total
                             </div>
                             <div className="text-xl font-bold ">
-                                ₫11,676,000
+                                $11,676,000
                             </div>
                         </div>
 
