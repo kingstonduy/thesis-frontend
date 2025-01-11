@@ -6,10 +6,111 @@ import {
     ProFormText,
 } from "@ant-design/pro-components";
 import { Button, Divider, message, theme } from "antd";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // React Router for navigation
+import { AutoLogin, Userlogin } from "./api-client/userClient";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
+import axios from "axios";
 
-const LoginPage = ({ handleLogin, handleRegister }) => {
+const LoginPage = ({ acceptLogin }) => {
     const { token } = theme.useToken();
+    const navigate = useNavigate(); // Hook for programmatic navigation
+
+    const handleRegister = () => {
+        navigate("/register"); // Update this path to your registration route
+    };
+
+    const handleLogin = async (e) => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                username: e.username,
+                password: e.password,
+            },
+            trace: {
+                frm: "web-app",
+                to: "user-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+
+        console.log(requestBody);
+
+        try {
+            // Ensure cookies are included in the request
+            const response = await Userlogin(requestBody);
+
+            console.log(response);
+
+            if (response.data.result.code !== "00") {
+                localStorage.removeItem("userID");
+                localStorage.removeItem("jwt");
+
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+                return;
+            } else {
+                const jwtToken = Cookies.get("jwt");
+                const userID = response.data.data.userID;
+                // logging
+                console.log("JWT Token:", jwtToken);
+                console.log("userID:", userID);
+                // set local storage
+                localStorage.setItem("userID", userID);
+                localStorage.setItem("jwt", jwtToken);
+                // Handle successful login
+                message.success("Login successful!", 1); // 1 second duration
+                navigate("/"); // Navigate to the homepage
+                acceptLogin();
+            }
+        } catch (error) {
+            message.error("Login failed. Please try again. " + error);
+        }
+    };
+
+    useEffect(() => {
+        const jwtToken = localStorage.getItem("jwt");
+        console.log("JWT Token:", jwtToken);
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                jwt: jwtToken,
+            },
+            trace: {
+                frm: "web-app",
+                to: "user-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+
+        if (jwtToken) {
+            console.log(requestBody);
+            axios
+                .post(
+                    "http://localhost:7001/is/v1/user-service/check-jwt",
+                    requestBody,
+                    {
+                        withCredentials: true, // Ensure cookies are sent
+                    }
+                )
+                .then((response) => {
+                    if (response.data.result.code == "00") {
+                        navigate("/"); // Navigate to the homepage
+                        acceptLogin();
+                    } else {
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error during login:", error);
+                });
+        }
+    }, []);
 
     return (
         <ProConfigProvider dark>

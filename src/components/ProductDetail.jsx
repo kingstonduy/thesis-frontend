@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { productClient } from "./api-client/productClient";
 import CommentSection from "./Comment";
+import { addCartItem } from "./api-client/cartClient";
+import { message } from "antd";
 
 export const productGetProductDetail = (object) =>
     productClient.post("/is/v1/product-service/get-product-detail", object);
@@ -83,8 +85,41 @@ const ProductDetailPage = () => {
         setSelectedSize(size);
     };
 
-    const handleAddToCart = () => {
-        alert("Sneaker added to cart!");
+    const handleAddToCart = async () => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                cartItems: [
+                    {
+                        cartItemQuantity: 1,
+                        productId: productId, // Example product ID
+                    },
+                ],
+                userId: localStorage.getItem("userID"),
+            },
+            trace: {
+                frm: "local",
+                to: "product-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        try {
+            const response = await addCartItem(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                message.success("add product to cart successfully!", 1); // 1 second duration
+            }
+        } catch (error) {
+            console.error("Error add to cart:", error);
+            alert("Error add to cart. Please try again later.");
+        }
     };
 
     if (!product) return <div>Loading...</div>;

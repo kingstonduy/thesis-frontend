@@ -1,8 +1,10 @@
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function DropDownMenu({ setIsLoggedIn }) {
     const handleLogout = () => {
+        localStorage.removeItem("jwt");
         setIsLoggedIn(false);
     };
 

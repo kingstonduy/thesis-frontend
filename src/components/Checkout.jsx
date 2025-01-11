@@ -1,31 +1,70 @@
 // src/CheckoutPage.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { getCartItems } from "./api-client/cartClient";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
 
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
-            name: "Sabrina 2 'Retrod' EP",
-            category: "Basketball Shoes",
-            size: "47.5",
-            price: 3829000,
-            quantity: 1,
-        },
-        {
-            id: 2,
-            image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
-            name: "Nike Cortez Textile",
-            category: "Women's Shoes",
-            size: "41",
-            price: 5858000,
-            quantity: 2,
-        },
-    ]);
+    const [cartItems, setCartItems] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0.0);
+
+    useEffect(() => {
+        fetchCartItems();
+    }, []);
+
+    const fetchCartItems = async () => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                userId: localStorage.getItem("userID"),
+            },
+            trace: {
+                frm: "local",
+                to: "product-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        try {
+            console.log(requestBody);
+            const response = await getCartItems(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                console.log(response);
+                // Process the cartItems from the response and update the state
+                const fetchedCartItems = response.data.data.cartItems.map(
+                    (item) => ({
+                        id: item.cartItemId, // Use cartItemId as the unique identifier
+                        name: item.productName,
+                        image: item.productImage,
+                        price: parseFloat(item.productPrice), // Convert to number if needed
+                        quantity: item.cartItemQuantity,
+                    })
+                );
+
+                // calculate the total price
+                const calculatedTotalPrice = fetchedCartItems.reduce(
+                    (acc, item) => acc + item.price * item.quantity,
+                    0
+                );
+                setTotalPrice(parseFloat(calculatedTotalPrice.toFixed(2)));
+
+                // Update the cartItems state with the fetched data
+                setCartItems(fetchedCartItems);
+            }
+        } catch (error) {
+            console.error("Error retrieve cart items:", error);
+            alert("Error retrieve cart items. Please try again later.");
+        }
+    };
 
     const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -150,7 +189,7 @@ const CheckoutPage = () => {
                         <div className="flex justify-between items-center py-2 border-b">
                             <div className="text-black">Subtotal</div>
                             <div className="text-lg font-semibold text-black">
-                                $11,676,000
+                                ${totalPrice}
                             </div>
                         </div>
 
@@ -170,7 +209,7 @@ const CheckoutPage = () => {
                                 Total
                             </div>
                             <div className="text-xl font-bold ">
-                                $11,676,000
+                                ${totalPrice}
                             </div>
                         </div>
 

@@ -21,9 +21,7 @@ import ProductGenderMen from "./components/ProductGridGenderMen";
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    function handleLogin(e) {
-        console.log(e);
-        message.success("Login successful!", 1); // 1 second duration
+    function acceptLogin() {
         setIsLoggedIn(true);
     }
 
@@ -65,7 +63,12 @@ function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                         path="*"
-                        element={<LoginPage handleLogin={handleLogin} />}
+                        element={
+                            <LoginPage
+                                // handleLogin={handleLogin}
+                                acceptLogin={acceptLogin}
+                            />
+                        }
                     />
                 </Routes>
             )}

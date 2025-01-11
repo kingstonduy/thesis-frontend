@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-    Button,
-    Divider,
-    Input,
-    Select,
-    Form,
-    DatePicker,
-    message,
-    theme,
-} from "antd";
+import { Select, message, theme } from "antd";
 import axios from "axios";
 import "antd/dist/reset.css";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -19,10 +10,15 @@ import {
     ProFormSelect,
     ProFormDatePicker,
 } from "@ant-design/pro-components";
+import moment from "moment";
+import { UserRegister } from "./api-client/userClient";
+import { useNavigate } from "react-router-dom"; // React Router for navigation
 
 const { Option } = Select;
 
 const RegisterPage = ({ handleRegisterSubmit }) => {
+    const navigate = useNavigate(); // Hook for programmatic navigation
+
     const { token } = theme.useToken();
     const [locations, setLocations] = useState({
         cities: [],
@@ -80,42 +76,53 @@ const RegisterPage = ({ handleRegisterSubmit }) => {
     };
 
     const handleSubmit = async (values) => {
-        console.log(values);
-        // if (values.password !== values.confirmPassword) {
-        //     message.error("Passwords do not match!");
-        //     return;
-        // }
-        // const timestamp = Date.now();
-        // const guid = crypto.randomUUID();
-        // const requestBody = {
-        //     data: {
-        //         userName: guid,
-        //         email: values.email,
-        //         password: values.password,
-        //         phoneNumber: values.phoneNumber,
-        //         dateOfBirth: values.dateOfBirth.format("DD-MM-YYYY"),
-        //         gender: values.gender,
-        //         city: values.city,
-        //         cityCode: address.cityCode,
-        //         district: values.district,
-        //         districtCode: address.districtCode,
-        //         ward: values.ward,
-        //         wardCode: address.wardCode,
-        //         street: values.street,
-        //     },
-        //     trace: {
-        //         frm: "local",
-        //         to: "user-service",
-        //         cts: timestamp,
-        //         cid: guid,
-        //     },
-        // };
-        // try {
-        //     await handleRegisterSubmit(requestBody);
-        //     message.success("Registration successful!");
-        // } catch (error) {
-        //     message.error("Registration failed. Please try again.");
-        // }
+        if (values.password !== values.confirmPassword) {
+            message.error("Passwords do not match!");
+            return;
+        }
+
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                userName: values.username,
+                email: values.email,
+                password: values.password,
+                phoneNumber: values.phoneNumber,
+                dateOfBirth: moment(values.dateOfBirth).format("DD-MM-YYYY"),
+                gender: values.gender,
+                city: values.city,
+                cityCode: address.cityCode,
+                district: values.district,
+                districtCode: address.districtCode,
+                ward: values.ward,
+                wardCode: address.wardCode,
+                street: values.street,
+            },
+            trace: {
+                frm: "web-app",
+                to: "user-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        console.log(requestBody);
+        try {
+            const response = await UserRegister(requestBody);
+            console.log(response);
+            if (response.data.result.code !== "00") {
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+                return;
+            } else {
+                message.success("Login successful!", 1); // 1 second duration
+                navigate("/login");
+            }
+        } catch (error) {
+            message.error("Registration failed. Please try again." + error);
+        }
     };
 
     return (
@@ -186,6 +193,27 @@ const RegisterPage = ({ handleRegisterSubmit }) => {
                             {
                                 required: true,
                                 message: "Please enter your phone number!",
+                            },
+                        ]}
+                    />
+                    <ProFormText
+                        name="username"
+                        fieldProps={{
+                            size: "large",
+                            prefix: (
+                                <UserOutlined
+                                    style={{
+                                        color: token.colorText,
+                                    }}
+                                    className="prefixIcon"
+                                />
+                            ),
+                        }}
+                        placeholder="Enter your username"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter your username!",
                             },
                         ]}
                     />

@@ -1,13 +1,19 @@
 import axios from "axios";
 
-export const productClient = axios.create({
-    baseURL: "http://localhost:7002",
+export const userClient = axios.create({
+    baseURL: "http://localhost:7001",
 });
 
-export const Userlogin = (object) =>
-    userClient.post("/is/v1/user-service/login", object);
+export const AutoLogin = () => {
+    userClient.post("/is/v1/user-service/check-jwt", object);
+};
 
-export const Userregister = (object) =>
+export const Userlogin = (object) =>
+    userClient.post("/is/v1/user-service/login", object, {
+        withCredentials: true,
+    });
+
+export const UserRegister = (object) =>
     userClient.post("/is/v1/user-service/register", object);
 
 export const UserGetUserInfo = (object) =>

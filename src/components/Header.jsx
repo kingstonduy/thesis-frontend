@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SearchTray from "./SearchTray";
 import DropDownMenu from "./react-bootstrap/DropDownMenu";
 import { useNavigate } from "react-router-dom";
+import { getCartItems } from "./api-client/cartClient";
 
 const Header = ({ setIsLoggedIn }) => {
     const navigate = useNavigate();
@@ -11,20 +12,20 @@ const Header = ({ setIsLoggedIn }) => {
 
     // Define cart items with mock data
     const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Nike Dunk Low SE",
-            image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
-            price: 100,
-            quantity: 1,
-        },
-        {
-            id: 2,
-            name: "Adidas Ultraboost",
-            image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
-            price: 120,
-            quantity: 2,
-        },
+        // {
+        //     id: 1,
+        //     name: "Nike Dunk Low SE",
+        //     image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
+        //     price: 100,
+        //     quantity: 1,
+        // },
+        // {
+        //     id: 2,
+        //     name: "Adidas Ultraboost",
+        //     image: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8b0d4d2e-d306-4b50-b335-e9c8202144d8/NIKE+DUNK+LOW+SE.png",
+        //     price: 120,
+        //     quantity: 2,
+        // },
     ]);
 
     // Opens the search tray
@@ -34,8 +35,56 @@ const Header = ({ setIsLoggedIn }) => {
     const closeTray = () => setIsTrayOpen(false);
 
     // Toggles the cart panel visibility
-    const toggleCart = () => setIsCartOpen(!isCartOpen);
+    const toggleCart = () => {
+        setIsCartOpen(!isCartOpen);
+        if (!isCartOpen) {
+            fetchCartItems();
+        }
+    };
 
+    const fetchCartItems = async () => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                userId: localStorage.getItem("userID"),
+            },
+            trace: {
+                frm: "local",
+                to: "product-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        try {
+            const response = await getCartItems(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                console.log(response);
+                // Process the cartItems from the response and update the state
+                const fetchedCartItems = response.data.data.cartItems.map(
+                    (item) => ({
+                        id: item.cartItemId, // Use cartItemId as the unique identifier
+                        name: item.productName,
+                        image: item.productImage,
+                        price: parseFloat(item.productPrice), // Convert to number if needed
+                        quantity: item.cartItemQuantity,
+                    })
+                );
+
+                // Update the cartItems state with the fetched data
+                setCartItems(fetchedCartItems);
+            }
+        } catch (error) {
+            console.error("Error retrieve cart items:", error);
+            alert("Error retrieve cart items. Please try again later.");
+        }
+    };
     // Handles increment or decrement of the product quantity
     const adjustQuantity = (id, type) => {
         setCartItems((prevItems) =>
