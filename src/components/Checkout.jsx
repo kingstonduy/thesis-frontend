@@ -39,26 +39,28 @@ const CheckoutPage = () => {
                 console.error("Details:", response.data.result.details);
             } else {
                 console.log(response);
-                // Process the cartItems from the response and update the state
-                const fetchedCartItems = response.data.data.cartItems.map(
-                    (item) => ({
-                        id: item.cartItemId, // Use cartItemId as the unique identifier
-                        name: item.productName,
-                        image: item.productImage,
-                        price: parseFloat(item.productPrice), // Convert to number if needed
-                        quantity: item.cartItemQuantity,
-                    })
-                );
+                if (response.data.data.cartItems != null) {
+                    // Process the cartItems from the response and update the state
+                    const fetchedCartItems = response.data.data.cartItems.map(
+                        (item) => ({
+                            id: item.cartItemId, // Use cartItemId as the unique identifier
+                            name: item.productName,
+                            image: item.productImage,
+                            price: parseFloat(item.productPrice), // Convert to number if needed
+                            quantity: item.cartItemQuantity,
+                        })
+                    );
 
-                // calculate the total price
-                const calculatedTotalPrice = fetchedCartItems.reduce(
-                    (acc, item) => acc + item.price * item.quantity,
-                    0
-                );
-                setTotalPrice(parseFloat(calculatedTotalPrice.toFixed(2)));
+                    // calculate the total price
+                    const calculatedTotalPrice = fetchedCartItems.reduce(
+                        (acc, item) => acc + item.price * item.quantity,
+                        0
+                    );
+                    setTotalPrice(parseFloat(calculatedTotalPrice.toFixed(2)));
 
-                // Update the cartItems state with the fetched data
-                setCartItems(fetchedCartItems);
+                    // Update the cartItems state with the fetched data
+                    setCartItems(fetchedCartItems);
+                }
             }
         } catch (error) {
             console.error("Error retrieve cart items:", error);

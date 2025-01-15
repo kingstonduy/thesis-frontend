@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const userClient = axios.create({
-    baseURL: "http://localhost:7001",
+    baseURL: "http://34.58.117.236:7001",
 });
 
 export const AutoLogin = () => {
@@ -21,3 +21,8 @@ export const UserGetUserInfo = (object) =>
 
 export const Userupdate = (object) =>
     userClient.post("/is/v1/user-service/update", object);
+
+export const CheckJwt = (object) =>
+    userClient.post("/is/v1/user-service/check-jwt", object, {
+        withCredentials: true, // Ensure cookies are sent
+    });

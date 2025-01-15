@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SearchTray from "./SearchTray";
 import DropDownMenu from "./react-bootstrap/DropDownMenu";
 import { useNavigate } from "react-router-dom";
-import { getCartItems } from "./api-client/cartClient";
+import { getCartItems, updateCartItem } from "./api-client/cartClient";
 
 const Header = ({ setIsLoggedIn }) => {
     const navigate = useNavigate();
@@ -66,19 +66,21 @@ const Header = ({ setIsLoggedIn }) => {
                 console.error("Details:", response.data.result.details);
             } else {
                 console.log(response);
-                // Process the cartItems from the response and update the state
-                const fetchedCartItems = response.data.data.cartItems.map(
-                    (item) => ({
-                        id: item.cartItemId, // Use cartItemId as the unique identifier
-                        name: item.productName,
-                        image: item.productImage,
-                        price: parseFloat(item.productPrice), // Convert to number if needed
-                        quantity: item.cartItemQuantity,
-                    })
-                );
+                if (response.data.data.cartItems != null) {
+                    // Process the cartItems from the response and update the state
+                    const fetchedCartItems = response.data.data.cartItems.map(
+                        (item) => ({
+                            id: item.cartItemId, // Use cartItemId as the unique identifier
+                            name: item.productName,
+                            image: item.productImage,
+                            price: parseFloat(item.productPrice), // Convert to number if needed
+                            quantity: item.cartItemQuantity,
+                        })
+                    );
 
-                // Update the cartItems state with the fetched data
-                setCartItems(fetchedCartItems);
+                    // Update the cartItems state with the fetched data
+                    setCartItems(fetchedCartItems);
+                }
             }
         } catch (error) {
             console.error("Error retrieve cart items:", error);
@@ -86,30 +88,102 @@ const Header = ({ setIsLoggedIn }) => {
         }
     };
     // Handles increment or decrement of the product quantity
-    const adjustQuantity = (id, type) => {
-        setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id
-                    ? {
-                          ...item,
-                          quantity:
-                              type === "increase"
-                                  ? item.quantity + 1
-                                  : Math.max(item.quantity - 1, 1),
-                      }
-                    : item
-            )
-        );
+    const adjustQuantity = async (id, currentQuantity, type) => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        let newQuantity = currentQuantity;
+        if (type === "decrease") {
+            newQuantity = currentQuantity - 1;
+        } else {
+            newQuantity = currentQuantity + 1;
+        }
+        const requestBody = {
+            data: {
+                cartItemId: id,
+                cartItemQuantity: newQuantity,
+            },
+            trace: {
+                frm: "local",
+                to: "cart-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+
+        try {
+            const response = await updateCartItem(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                setCartItems((prevItems) =>
+                    prevItems.map((item) =>
+                        item.id === id
+                            ? {
+                                  ...item,
+                                  quantity:
+                                      type === "increase"
+                                          ? item.quantity + 1
+                                          : Math.max(item.quantity - 1, 1),
+                              }
+                            : item
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error update cart items:", error);
+            alert("Error update cart items. Please try again later.");
+        }
     };
 
     const handleCheckout = (navigate) => {
         setIsCartOpen(false);
+        console.log(cartItems);
+        if (cartItems.length === 0) {
+            alert("Cart is empty. Please add items to proceed.");
+            return;
+        }
         navigate("/checkout");
     };
 
     // Removes a product from the cart
-    const removeFromCart = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    const removeFromCart = async (id) => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+
+        const requestBody = {
+            data: {
+                cartItemId: id,
+                cartItemQuantity: 0,
+            },
+            trace: {
+                frm: "local",
+                to: "cart-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+
+        try {
+            const response = await updateCartItem(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                setCartItems((prevItems) =>
+                    prevItems.filter((item) => item.id !== id)
+                );
+            }
+        } catch (error) {
+            console.error("Error update cart items:", error);
+            alert("Error update cart items. Please try again later.");
+        }
     };
 
     // Navigation items for the header navbar
@@ -286,6 +360,7 @@ const Header = ({ setIsLoggedIn }) => {
                                                                 onClick={() =>
                                                                     adjustQuantity(
                                                                         item.id,
+                                                                        item.quantity,
                                                                         "decrease"
                                                                     )
                                                                 }
@@ -342,6 +417,7 @@ const Header = ({ setIsLoggedIn }) => {
                                                             onClick={() =>
                                                                 adjustQuantity(
                                                                     item.id,
+                                                                    item.quantity,
                                                                     "increase"
                                                                 )
                                                             }

@@ -7,7 +7,7 @@ import {
 } from "@ant-design/pro-components";
 import { Button, Divider, message, theme } from "antd";
 import { useNavigate } from "react-router-dom"; // React Router for navigation
-import { AutoLogin, Userlogin } from "./api-client/userClient";
+import { AutoLogin, CheckJwt, Userlogin } from "./api-client/userClient";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 import axios from "axios";
@@ -91,14 +91,7 @@ const LoginPage = ({ acceptLogin }) => {
 
         if (jwtToken) {
             console.log(requestBody);
-            axios
-                .post(
-                    "http://localhost:7001/is/v1/user-service/check-jwt",
-                    requestBody,
-                    {
-                        withCredentials: true, // Ensure cookies are sent
-                    }
-                )
+            CheckJwt(requestBody)
                 .then((response) => {
                     if (response.data.result.code == "00") {
                         navigate("/"); // Navigate to the homepage
