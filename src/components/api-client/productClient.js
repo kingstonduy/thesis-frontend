@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const productClient = axios.create({
-    baseURL: "http://34.58.117.236:7002",
+    baseURL: "http://34.142.145.208:7002",
 });
 
 export const productGetProducts = (object) =>

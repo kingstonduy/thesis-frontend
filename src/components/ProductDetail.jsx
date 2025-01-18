@@ -20,7 +20,7 @@ const ProductDetailPage = () => {
 
             const requestBody = {
                 trace: {
-                    frm: "local",
+                    frm: "client",
                     to: "product-service",
                     cts: timestamp,
                     cid: guid,
@@ -30,6 +30,7 @@ const ProductDetailPage = () => {
                 },
             };
 
+            console.log(requestBody);
             try {
                 const response = await productGetProductDetail(requestBody);
 
@@ -90,12 +91,8 @@ const ProductDetailPage = () => {
         const guid = crypto.randomUUID();
         const requestBody = {
             data: {
-                cartItems: [
-                    {
-                        cartItemQuantity: 1,
-                        productId: productId, // Example product ID
-                    },
-                ],
+                cartItemQuantity: 1,
+                productId: productId, // Example product ID
                 userId: localStorage.getItem("userID"),
             },
             trace: {
@@ -105,6 +102,7 @@ const ProductDetailPage = () => {
                 cid: guid,
             },
         };
+        console.log(requestBody);
         try {
             const response = await addCartItem(requestBody);
             if (response.data.result.code !== "00") {

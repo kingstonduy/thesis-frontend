@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const userClient = axios.create({
-    baseURL: "http://34.58.117.236:7001",
+    baseURL: "http://34.142.145.208:7001",
 });
 
 export const AutoLogin = () => {

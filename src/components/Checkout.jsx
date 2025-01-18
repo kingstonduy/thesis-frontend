@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { getCartItems } from "./api-client/cartClient";
+import { executeTransaction } from "./api-client/oderClient";
+import { message } from "antd";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
@@ -48,6 +50,7 @@ const CheckoutPage = () => {
                             image: item.productImage,
                             price: parseFloat(item.productPrice), // Convert to number if needed
                             quantity: item.cartItemQuantity,
+                            productId: item.productId,
                         })
                     );
 
@@ -70,8 +73,43 @@ const CheckoutPage = () => {
 
     const [paymentMethod, setPaymentMethod] = useState("");
 
-    const handleCheckout = () => {
-        alert("check out successfully");
+    const handleCheckout = async () => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                details: cartItems.map((item) => ({
+                    cartItemId: item.id,
+                    cartItemQuantity: item.quantity,
+                    productCatergory: item.category,
+                    productId: item.productId, // Assuming `id` is the product ID
+                    productImage: item.image,
+                    productName: item.name,
+                    productPrice: item.price.toString(), // Convert to string for API
+                })),
+                userID: localStorage.getItem("userID"),
+            },
+            trace: {
+                frm: "local",
+                to: "user-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        console.log(requestBody);
+        try {
+            const response = await executeTransaction(requestBody);
+            if (response.data.result.code !== "00") {
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+            } else {
+                message.success("Checkout successful!", 1); // 1 second duration
+            }
+        } catch (error) {
+            console.error("Error during checkout:", error);
+            alert("Failed to complete the checkout.");
+        }
         navigate("/home");
     };
 
