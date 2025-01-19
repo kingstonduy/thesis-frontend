@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const orderClient = axios.create({
-    baseURL: "http://34.142.145.208:7005",
+    baseURL: "http://34.143.206.13:7005",
 });
 
 export const executeTransaction = (object) =>

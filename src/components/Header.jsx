@@ -21,6 +21,7 @@ const Header = ({ setIsLoggedIn }) => {
     };
 
     const fetchCartItems = async () => {
+        setCartItems([]);
         const timestamp = Date.now();
         const guid = crypto.randomUUID();
         const requestBody = {
