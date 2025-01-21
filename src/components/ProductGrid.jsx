@@ -38,12 +38,11 @@ const ProductGrid = () => {
                 return;
             }
 
-            const fetchedProducts = response.data.data.products.map(
+            const fetchedProducts = response.data.data.details.map(
                 (product) => ({
                     id: product.productId,
                     name: product.productName,
                     price: product.productPrice,
-                    rating: product.averageRating,
                     image: product.productImage,
                 })
             );
@@ -70,7 +69,10 @@ const ProductGrid = () => {
 
     // Initial data fetch
     useEffect(() => {
-        fetchAllProducts();
+        // check if all products are fetched
+        if (allProducts.length === 0) {
+            fetchAllProducts();
+        }
     }, []);
 
     // Update products when currentPage changes
@@ -140,7 +142,7 @@ const ProductGrid = () => {
                             <p className="text-lg font-semibold text-red-500">
                                 ${product.price.toLocaleString()}
                             </p>
-                            <div className="flex items-center space-x-1 text-sm text-yellow-500">
+                            {/* <div className="flex items-center space-x-1 text-sm text-yellow-500">
                                 <svg
                                     className="w-4 h-4"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +152,7 @@ const ProductGrid = () => {
                                     <path d="M12 2l2.9 8.26H22l-7.05 5.11L16.8 22 12 17.27 7.2 22l1.15-6.63L2 10.26h7.1L12 2z" />
                                 </svg>
                                 <span>{product.rating}</span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 ))}

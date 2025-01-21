@@ -68,6 +68,7 @@ const ProductDetailPage = () => {
                         ),
                     },
                     image: response.data.data.productImage,
+                    gender: response.data.data.gender,
                 };
 
                 setProduct(fetchedProduct);
@@ -144,12 +145,19 @@ const ProductDetailPage = () => {
                     {/* Product Category */}
                     <div className="text-customGray text-[23px] mb-2">
                         <h2 className="text-[18px] font-semibold mb-2">
-                            {product.category}
+                            Category: {product.category}
+                        </h2>
+                    </div>
+
+                    {/* Product Gender */}
+                    <div className="text-customGray text-[23px] mb-2">
+                        <h2 className="text-[18px] font-semibold mb-2">
+                            Gender: {product.gender}
                         </h2>
                     </div>
 
                     {/* Product Price */}
-                    <p className="text-customGray text-[20px] mb-4">
+                    <p className="text-customGray text-[20px] mt-4 mb-4">
                         {product.price}
                     </p>
 
@@ -209,7 +217,7 @@ const ProductDetailPage = () => {
                     </div>
                 </div>
             </div>
-            <CommentSection />
+            {/* <CommentSection /> */}
         </div>
     );
 };

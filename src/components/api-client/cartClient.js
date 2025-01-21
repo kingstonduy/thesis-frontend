@@ -1,7 +1,8 @@
 import axios from "axios";
+import { HOST } from "./Axios";
 
 export const cartClient = axios.create({
-    baseURL: "http://34.143.206.13:7003",
+    baseURL: `http://${HOST}:7003`,
 });
 
 export const addCartItem = (object) =>

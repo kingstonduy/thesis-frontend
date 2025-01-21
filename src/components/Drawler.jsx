@@ -9,7 +9,7 @@ const Drawler = () => {
     const [open, setOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const cartClient = axios.create({
-        baseURL: "http://34.143.206.13:7003",
+        baseURL: "http://34.124.235.0:7003",
     });
 
     const getCartItems = (object) =>

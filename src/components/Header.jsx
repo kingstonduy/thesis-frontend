@@ -40,8 +40,8 @@ const Header = ({ setIsLoggedIn }) => {
                     </div>
 
                     {/* Navigation Section */}
-                    <div className="nav-items pl-[20px] pr-[50px]">
-                        <ul className="list-none flex gap-x-12 items-center">
+                    <div className="nav-items pl-[20px] pr-[50px] flex pt-3">
+                        <ul className="list-none flex gap-x-12">
                             {Navbar.map((item, index) => (
                                 <li key={index}>
                                     <Link

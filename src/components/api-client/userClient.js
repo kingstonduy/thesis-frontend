@@ -1,7 +1,8 @@
 import axios from "axios";
+import { HOST } from "./Axios";
 
 export const userClient = axios.create({
-    baseURL: "http://34.143.206.13:7001",
+    baseURL: `http://${HOST}:7001`,
 });
 
 export const AutoLogin = () => {
