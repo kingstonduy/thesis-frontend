@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST } from "./Axios";
 
 export const productClient = axios.create({
-    baseURL: `http://${HOST}:7002`,
+    baseURL: `http://${HOST}:8000/product-service/`,
 });
 
 export const productGetProducts = (object) =>

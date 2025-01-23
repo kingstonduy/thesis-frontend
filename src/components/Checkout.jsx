@@ -5,16 +5,60 @@ import { useNavigate } from "react-router-dom";
 import { getCartItems } from "./api-client/cartClient";
 import { executeTransaction } from "./api-client/oderClient";
 import { message } from "antd";
+import { UserGetUserInfo } from "./api-client/userClient";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
 
+    const [userInfo, setUserInfo] = useState({ username: "test" });
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0.0);
 
     useEffect(() => {
         fetchCartItems();
+        fetchUserInfo();
     }, []);
+
+    const fetchUserInfo = async () => {
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
+        const requestBody = {
+            data: {
+                userId: localStorage.getItem("userID"),
+            },
+            trace: {
+                frm: "local",
+                to: "user-service",
+                cts: timestamp,
+                cid: guid,
+            },
+        };
+        try {
+            console.log(requestBody);
+            const response = await UserGetUserInfo(requestBody);
+            if (response.data.result.code !== "00") {
+                // Show alert if code is not "00"
+                alert(
+                    `Error: ${response.data.result.message || "Unknown error"}`
+                );
+                console.error("Details:", response.data.result.details);
+            } else {
+                console.log(response);
+                const fetchedUserInfo = {
+                    username: response.data.data.userName,
+                    phoneNumber: response.data.data.phoneNumber,
+                    street: response.data.data.street,
+                    city: response.data.data.city,
+                    district: response.data.data.district,
+                    ward: response.data.data.ward,
+                };
+                setUserInfo(fetchedUserInfo);
+            }
+        } catch (error) {
+            console.error("Error get user info", error);
+            alert("Error get user info. Please try again later.");
+        }
+    };
 
     const fetchCartItems = async () => {
         const timestamp = Date.now();
@@ -71,8 +115,6 @@ const CheckoutPage = () => {
         }
     };
 
-    const [paymentMethod, setPaymentMethod] = useState("");
-
     const handleCheckout = async () => {
         const timestamp = Date.now();
         const guid = crypto.randomUUID();
@@ -118,10 +160,6 @@ const CheckoutPage = () => {
         0
     );
 
-    const handlePaymentChange = (event) => {
-        setPaymentMethod(event.target.value);
-    };
-
     return (
         <div className="max-w-7xl mx-auto p-6">
             <div className="space-y-8">
@@ -141,11 +179,11 @@ const CheckoutPage = () => {
                             <div>Delivery Address</div>
                         </div>
                         <div className="flex flex-col">
-                            <div>kingstonduy</div>
-                            <div>0834802007</div>
+                            <div>{userInfo.username}</div>
+                            <div>083480207</div>
                             <div>
-                                Toà Nhà Hallmark, Đường Trần Bạch Đằng, Phường
-                                Thủ Thiêm, Thành Phố Thủ Đức, TP. Hồ Chí Minh
+                                {userInfo.street}, {userInfo.ward},
+                                {userInfo.district}, {userInfo.city}
                             </div>
                         </div>
                     </div>

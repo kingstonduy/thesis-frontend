@@ -259,6 +259,26 @@ const RegisterPage = ({ handleRegisterSubmit }) => {
                             },
                         ]}
                     />
+
+                    <ProFormSelect
+                        name="gender"
+                        placeholder="Select your gender"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select your gender!",
+                            },
+                        ]}
+                        options={[
+                            { label: "Male", value: "male" },
+                            { label: "Female", value: "female" },
+                        ]}
+                        fieldProps={{
+                            onChange: (value) =>
+                                handleAddressChange(value, "gender"),
+                        }}
+                    />
+
                     <ProFormDatePicker
                         name="dateOfBirth"
                         style={{ width: "100%", height: "100%" }}
@@ -270,6 +290,7 @@ const RegisterPage = ({ handleRegisterSubmit }) => {
                             },
                         ]}
                     />
+
                     <ProFormSelect
                         name="city"
                         placeholder="Select your city"

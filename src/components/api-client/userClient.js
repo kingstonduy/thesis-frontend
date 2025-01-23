@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST } from "./Axios";
 
 export const userClient = axios.create({
-    baseURL: `http://${HOST}:7001`,
+    baseURL: `http://${HOST}:8000/user-service/`,
 });
 
 export const AutoLogin = () => {

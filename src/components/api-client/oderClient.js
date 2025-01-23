@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST } from "./Axios";
 
 export const orderClient = axios.create({
-    baseURL: `http://${HOST}:7005`,
+    baseURL: `http://${HOST}:8000/order-service/`,
 });
 
 export const executeTransaction = (object) =>

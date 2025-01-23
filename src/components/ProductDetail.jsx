@@ -70,7 +70,6 @@ const ProductDetailPage = () => {
                     image: response.data.data.productImage,
                     gender: response.data.data.gender,
                 };
-
                 setProduct(fetchedProduct);
             } catch (error) {
                 console.error("Error fetching product details:", error);

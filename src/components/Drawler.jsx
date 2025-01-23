@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Drawer, Space } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { updateCartItem } from "./api-client/cartClient";
+import { getCartItems, updateCartItem } from "./api-client/cartClient";
 
 const Drawler = () => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [cartItems, setCartItems] = useState([]);
-    const cartClient = axios.create({
-        baseURL: "http://34.124.235.0:7003",
-    });
-
-    const getCartItems = (object) =>
-        cartClient.post("/is/v1/cart-service/get-items", object);
 
     const fetchCartItems = async () => {
         setCartItems([]);
@@ -21,7 +15,7 @@ const Drawler = () => {
         const guid = crypto.randomUUID();
         const requestBody = {
             data: {
-                userId: "e4f56512-65d7-4414-8442-4305129920ef",
+                userId: localStorage.getItem("userID"),
             },
             trace: {
                 frm: "local",
