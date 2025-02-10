@@ -3,6 +3,7 @@ import { HOST } from "./Axios";
 
 export const productClient = axios.create({
     baseURL: `http://${HOST}:8000/product-service/`,
+    referrerPolicy: "unsafe-url",
 });
 
 export const productGetProducts = (object) =>

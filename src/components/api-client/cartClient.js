@@ -3,6 +3,7 @@ import { HOST } from "./Axios";
 
 export const cartClient = axios.create({
     baseURL: `http://${HOST}:8000/cart-service/`,
+    referrerPolicy: "unsafe-url",
 });
 
 export const addCartItem = (object) =>
