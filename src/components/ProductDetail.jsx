@@ -67,6 +67,7 @@ const ProductDetailPage = () => {
                             })
                         ),
                     },
+                    quantity: response.data.data.productQuantity,
                     image: response.data.data.productImage,
                     gender: response.data.data.gender,
                 };
@@ -152,6 +153,13 @@ const ProductDetailPage = () => {
                     <div className="text-customGray text-[23px] mb-2">
                         <h2 className="text-[18px] font-semibold mb-2">
                             Gender: {product.gender}
+                        </h2>
+                    </div>
+
+                    {/* Product Quantity */}
+                    <div className="text-customGray text-[23px] mb-2">
+                        <h2 className="text-[18px] font-semibold mb-2">
+                            Quantity: {product.quantity}
                         </h2>
                     </div>
 

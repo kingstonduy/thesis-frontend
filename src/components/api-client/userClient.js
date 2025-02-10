@@ -3,7 +3,6 @@ import { HOST } from "./Axios";
 
 export const userClient = axios.create({
     baseURL: `http://${HOST}:8000/user-service/`,
-    referrerPolicy: "unsafe-url",
 });
 
 export const AutoLogin = () => {
