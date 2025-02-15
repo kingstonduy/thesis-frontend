@@ -1,8 +1,9 @@
 import axios from "axios";
-import { HOST } from "./Axios";
+import { HOST, agent } from "./Axios";
 
 export const orderClient = axios.create({
-    baseURL: `http://${HOST}:8000/order-service/`,
+    baseURL: `https://${HOST}:8443/order-service/`,
+    httpsAgent: agent,
 });
 
 export const executeTransaction = (object) =>
