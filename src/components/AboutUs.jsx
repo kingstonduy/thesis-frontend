@@ -195,17 +195,17 @@ const teamMembers = [
     {
         name: "Duong Khanh Duy",
         role: "Founder & CEO",
-        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=sLq4_OFxgn8Q7kNvgHVmTsd&_nc_oc=AdidByBUi_DlIV48Xv_QA9PSxe6giVx2EPtZFKDnLtu0T54_Xi2TLbQGEoHXEr6n6FQ&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=AfeNs6rXbZUkYAD2ubwEtJd&oh=00_AYDTDxyMHXyHMxHjcYKLVpPJvwou17sATTbkDX4BL5yB6g&oe=6797BE59",
+        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=yKl9rAJvI-kQ7kNvgFAr2kQ&_nc_oc=AdjRVs3GJCPwk0M1jkTXC8ISBdiLBGu8IzWF0kWjwI4R41-pUJ53rgHsNNbWYRhhdkc&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A9la_3xwPq8xPxVMJQkEDra&oh=00_AYD4SQgLac8i1aB6ESJgWUqa6o7jQn8OIYPIOrPWvmryIg&oe=67B5D899",
     },
     {
         name: "Duong Khanh Duy",
         role: "Chief Technology Officer",
-        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=sLq4_OFxgn8Q7kNvgHVmTsd&_nc_oc=AdidByBUi_DlIV48Xv_QA9PSxe6giVx2EPtZFKDnLtu0T54_Xi2TLbQGEoHXEr6n6FQ&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=AfeNs6rXbZUkYAD2ubwEtJd&oh=00_AYDTDxyMHXyHMxHjcYKLVpPJvwou17sATTbkDX4BL5yB6g&oe=6797BE59",
+        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=yKl9rAJvI-kQ7kNvgFAr2kQ&_nc_oc=AdjRVs3GJCPwk0M1jkTXC8ISBdiLBGu8IzWF0kWjwI4R41-pUJ53rgHsNNbWYRhhdkc&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A9la_3xwPq8xPxVMJQkEDra&oh=00_AYD4SQgLac8i1aB6ESJgWUqa6o7jQn8OIYPIOrPWvmryIg&oe=67B5D899",
     },
     {
         name: "Duong Khanh Duy",
         role: "A chief operating officer",
-        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=sLq4_OFxgn8Q7kNvgHVmTsd&_nc_oc=AdidByBUi_DlIV48Xv_QA9PSxe6giVx2EPtZFKDnLtu0T54_Xi2TLbQGEoHXEr6n6FQ&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=AfeNs6rXbZUkYAD2ubwEtJd&oh=00_AYDTDxyMHXyHMxHjcYKLVpPJvwou17sATTbkDX4BL5yB6g&oe=6797BE59",
+        image: "https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/409178481_2169379819932639_7576753703798547393_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=yKl9rAJvI-kQ7kNvgFAr2kQ&_nc_oc=AdjRVs3GJCPwk0M1jkTXC8ISBdiLBGu8IzWF0kWjwI4R41-pUJ53rgHsNNbWYRhhdkc&_nc_zt=23&_nc_ht=scontent.fsgn2-4.fna&_nc_gid=A9la_3xwPq8xPxVMJQkEDra&oh=00_AYD4SQgLac8i1aB6ESJgWUqa6o7jQn8OIYPIOrPWvmryIg&oe=67B5D899",
     },
 ];
 
