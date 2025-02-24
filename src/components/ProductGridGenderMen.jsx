@@ -1,26 +1,27 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { productGetProductByGender } from "./api-client/productClient";
+import { productGetProducts } from "./api-client/productClient";
 
 const ProductGenderMen = () => {
-    const gender = "men";
-    const pageSize = 24; // Set maximum products per page to 32
+    const pageSize = 24;
     const [currentPage, setCurrentPage] = useState(1);
-    const [allProducts, setAllProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [maxPages, setMaxPages] = useState(0);
-    const navigate = useNavigate(); // Initialize the navigate function
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    // Fetch all products and calculate pagination
-    const fetchAllProducts = async () => {
-        const timestamp = Date.now(); // Current timestamp as a numeric value
-        const guid = crypto.randomUUID(); // Generate a unique GUID (modern browsers support this)
+    // Memoize fetchAllProducts to prevent recreation on every render
+    const fetchAllProducts = useCallback(async (page) => {
+        if (isLoading) return; // Prevent multiple simultaneous requests
+
+        setIsLoading(true);
+        const timestamp = Date.now();
+        const guid = crypto.randomUUID();
 
         const requestBody = {
             data: {
-                gender: gender,
+                pageNumber: page,
+                gender: "men",
             },
             trace: {
                 frm: "local",
@@ -31,10 +32,9 @@ const ProductGenderMen = () => {
         };
 
         try {
-            const response = await productGetProductByGender(requestBody);
-            console.log("response" + response);
+            const response = await productGetProducts(requestBody);
+
             if (response.data.result.code !== "00") {
-                // Show alert if code is not "00"
                 alert(
                     `Error: ${response.data.result.message || "Unknown error"}`
                 );
@@ -47,49 +47,28 @@ const ProductGenderMen = () => {
                     id: product.productId,
                     name: product.productName,
                     price: product.productPrice,
-                    rating: product.averageRating,
                     image: product.productImage,
                 })
             );
 
-            setAllProducts(fetchedProducts);
-
-            const calculatedMaxPages = Math.ceil(
-                fetchedProducts.length / pageSize
-            );
-            setMaxPages(calculatedMaxPages);
-            updatePageProducts(1, fetchedProducts);
+            setProducts(fetchedProducts);
+            setMaxPages(response.data.data.totalPage);
         } catch (error) {
             console.error("Error fetching products:", error);
             alert("Failed to fetch products. Please try again later.");
-        }
-    };
-
-    // Update products for the current page
-    const updatePageProducts = (page, fetchedProducts = allProducts) => {
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
-        setProducts(fetchedProducts.slice(startIndex, endIndex));
-    };
-
-    // Initial data fetch
-    useEffect(() => {
-        // check if all products are fetched
-        if (allProducts.length === 0) {
-            fetchAllProducts();
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
-    // Update products when currentPage changes
+    // Use useEffect only for the page change
     useEffect(() => {
-        updatePageProducts(currentPage);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }, [currentPage]);
+        fetchAllProducts(currentPage);
+    }, [currentPage, fetchAllProducts]);
 
-    // Generate dynamic pagination range
-    const getPaginationRange = () => {
-        const range = [];
-        range.push(1); // Always include page 1
+    // Memoize pagination range calculation
+    const paginationRange = useMemo(() => {
+        const range = [1];
 
         if (currentPage > 4) {
             range.push("...");
@@ -108,37 +87,51 @@ const ProductGenderMen = () => {
         }
 
         if (maxPages > 1) {
-            range.push(maxPages); // Always include the last page
+            range.push(maxPages);
         }
 
         return range;
-    };
+    }, [currentPage, maxPages]);
 
-    // Handle page change
-    const handlePageChange = (page) => {
-        if (page === "..." || page < 1 || page > maxPages) return;
-        setCurrentPage(page);
-    };
+    const handlePageChange = useCallback(
+        (page) => {
+            if (page === "..." || page < 1 || page > maxPages || isLoading)
+                return;
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        },
+        [maxPages, isLoading]
+    );
 
-    // Handle product click to navigate to the detail page
-    const handleProductClick = (productId) => {
-        navigate(`/product/${productId}`);
-    };
+    const handleProductClick = useCallback(
+        (productId) => {
+            navigate(`/product/${productId}`);
+        },
+        [navigate]
+    );
 
     return (
         <div className="pr-32 pl-32 pt-10 pd-10 min-h-[1000px]">
+            {/* Loading indicator */}
+            {isLoading && (
+                <div className="fixed top-0 left-0 w-full h-1">
+                    <div className="h-full bg-blue-500 animate-pulse"></div>
+                </div>
+            )}
+
             {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product) => (
                     <div
                         key={product.id}
-                        onClick={() => handleProductClick(product.id)} // Add click handler
+                        onClick={() => handleProductClick(product.id)}
                         className="border border-gray-300 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-transform cursor-pointer"
                     >
                         <img
                             src={product.image}
                             alt={product.name}
                             className="w-full h-49 object-cover rounded-t-lg"
+                            loading="lazy"
                         />
                         <div className="p-4">
                             <h3 className="text-base font-medium text-gray-800 line-clamp-2 leading-tight">
@@ -147,17 +140,6 @@ const ProductGenderMen = () => {
                             <p className="text-lg font-semibold text-red-500">
                                 ${product.price.toLocaleString()}
                             </p>
-                            {/* <div className="flex items-center space-x-1 text-sm text-yellow-500">
-                                <svg
-                                    className="w-4 h-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M12 2l2.9 8.26H22l-7.05 5.11L16.8 22 12 17.27 7.2 22l1.15-6.63L2 10.26h7.1L12 2z" />
-                                </svg>
-                                <span>{product.rating}</span>
-                            </div> */}
                         </div>
                     </div>
                 ))}
@@ -165,8 +147,7 @@ const ProductGenderMen = () => {
 
             {/* Pagination Bar */}
             <div className="flex justify-center items-center space-x-2 my-4">
-                {/* Pagination Buttons */}
-                {getPaginationRange().map((page, index) => (
+                {paginationRange.map((page, index) => (
                     <button
                         key={index}
                         onClick={() => handlePageChange(page)}
@@ -177,7 +158,7 @@ const ProductGenderMen = () => {
                                 ? "bg-gray-300 text-gray-500 cursor-default"
                                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                         }`}
-                        disabled={page === "..."}
+                        disabled={page === "..." || isLoading}
                     >
                         {page}
                     </button>

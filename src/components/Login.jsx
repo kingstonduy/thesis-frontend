@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom"; // React Router for navigation
 import { AutoLogin, CheckJwt, Userlogin } from "./api-client/userClient";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
-import axios from "axios";
 
 const LoginPage = ({ acceptLogin }) => {
     const { token } = theme.useToken();

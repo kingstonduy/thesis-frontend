@@ -7,7 +7,7 @@ export const productClient = axios.create({
 });
 
 export const productGetProducts = (object) =>
-    productClient.post("/is/v1/product-service/get-products", object);
+    productClient.post("/is/v1/product-service/get-products-page", object);
 
 export const productGetProductDetail = (object) =>
     productClient.post("/is/v1/product-service/get-product-detail", object);
