@@ -19,17 +19,25 @@ import ProductGenderWoMen from "./components/ProductGridGenderWomen";
 import ProductGenderMen from "./components/ProductGridGenderMen";
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(
+        () => JSON.parse(localStorage.getItem("isLoggedIn")) || false
+    );
 
     function acceptLogin() {
         setIsLoggedIn(true);
+        localStorage.setItem("isLoggedIn", JSON.stringify(true));
+    }
+
+    function handleLogout() {
+        setIsLoggedIn(false);
+        localStorage.removeItem("isLoggedIn");
     }
 
     return (
         <BrowserRouter basename="/thesis-frontend/">
             {isLoggedIn ? (
                 <>
-                    <Header setIsLoggedIn={setIsLoggedIn} />
+                    <Header setIsLoggedIn={handleLogout} />
                     <ScrollToTop />
                     <Routes>
                         <Route path="/" element={<LandingPage />} />
@@ -63,12 +71,7 @@ function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
                         path="*"
-                        element={
-                            <LoginPage
-                                // handleLogin={handleLogin}
-                                acceptLogin={acceptLogin}
-                            />
-                        }
+                        element={<LoginPage acceptLogin={acceptLogin} />}
                     />
                 </Routes>
             )}
