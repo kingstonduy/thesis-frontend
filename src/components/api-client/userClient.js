@@ -12,7 +12,7 @@ export const AutoLogin = () => {
 
 export const Userlogin = (object) =>
     userClient.post("/is/v1/user-service/login", object, {
-        withCredentials: true,
+        // withCredentials: true,
     });
 
 export const UserRegister = (object) =>
@@ -25,6 +25,4 @@ export const Userupdate = (object) =>
     userClient.post("/is/v1/user-service/update", object);
 
 export const CheckJwt = (object) =>
-    userClient.post("/is/v1/user-service/check-jwt", object, {
-        withCredentials: true, // Ensure cookies are sent
-    });
+    userClient.post("/is/v1/user-service/check-jwt", object, {});
