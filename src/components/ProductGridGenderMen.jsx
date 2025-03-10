@@ -48,6 +48,7 @@ const ProductGenderMen = () => {
                     name: product.productName,
                     price: product.productPrice,
                     image: product.productImage,
+                    quantity: product.productQuantity,
                 })
             );
 
@@ -137,9 +138,14 @@ const ProductGenderMen = () => {
                             <h3 className="text-base font-medium text-gray-800 line-clamp-2 leading-tight">
                                 {product.name}
                             </h3>
-                            <p className="text-lg font-semibold text-red-500">
-                                ${product.price.toLocaleString()}
-                            </p>
+                            <div className="flex justify-between items-center">
+                                <p className="text-lg font-semibold text-red-500">
+                                    ${product.price.toLocaleString()}
+                                </p>
+                                <p className="text-lg font-semibold text-orange-500">
+                                    Quantity: {product.quantity}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}
